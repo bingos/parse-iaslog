@@ -2076,7 +2076,7 @@ Using the module automagically imports 'parse_ias' into your namespace.
 
 =over
 
-=item c<parse_ias>
+=item C<parse_ias>
 
 Takes a string of IAS-formatted text as the first parameter. Subsequent parameter pairs are treated as 
 options. See new() for full details regarding optional parameters.
