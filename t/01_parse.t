@@ -10,20 +10,20 @@ my $original = '10.10.10.10,client,06/04/1999,14:42:19,IAS,CLIENTCOMP,6,2,7,1,5,
 
 my $record1 = parse_ias( $original, enumerate => 0 ) or die;
 
-ok( $record1->{'NAS-IP-Address'} eq '10.10.10.10', 'NAS-IP-Address' );
-ok( $record1->{'User-Name'} eq 'client', 'User-Name' );
-ok( $record1->{'Record-Date'} eq '06/04/1999', 'Record-Date' );
-ok( $record1->{'Record-Time'} eq '14:42:19', 'Record-Time' );
-ok( $record1->{'Service-Name'} eq 'IAS', 'Service-Name' );
-ok( $record1->{'Computer-Name'} eq 'CLIENTCOMP', 'Computer-Name' );
+is( $record1->{'NAS-IP-Address'}, '10.10.10.10', 'NAS-IP-Address' );
+is( $record1->{'User-Name'}, 'client', 'User-Name' );
+is( $record1->{'Record-Date'}, '06/04/1999', 'Record-Date' );
+is( $record1->{'Record-Time'}, '14:42:19', 'Record-Time' );
+is( $record1->{'Service-Name'}, 'IAS', 'Service-Name' );
+is( $record1->{'Computer-Name'}, 'CLIENTCOMP', 'Computer-Name' );
 
-ok( $record1->{'NAS-Port-Type'} eq '5', 'NAS-Port-Type' );
-ok( $record1->{'Service-Type'} eq '2', 'Service-Type' );
-ok( $record1->{'Tunnel-Medium-Type'} eq '1', 'Tunnel-Medium-Type' );
-ok( $record1->{'Tunnel-Type'} eq '1', 'Tunnel-Type' );
-ok( $record1->{'Framed-Protocol'} eq '1', 'Framed-Protocol' );
-ok( $record1->{'NAS-Port'} eq '9', 'NAS-Port' );
-ok( $record1->{'Calling-Station-ID'} eq '1', 'Calling-Station-ID' );
+is( $record1->{'NAS-Port-Type'}, '5', 'NAS-Port-Type' );
+is( $record1->{'Service-Type'}, '2', 'Service-Type' );
+is( $record1->{'Tunnel-Medium-Type'}, '1', 'Tunnel-Medium-Type' );
+is( $record1->{'Tunnel-Type'}, '1', 'Tunnel-Type' );
+is( $record1->{'Framed-Protocol'}, '1', 'Framed-Protocol' );
+is( $record1->{'NAS-Port'}, '9', 'NAS-Port' );
+is( $record1->{'Calling-Station-ID'}, '1', 'Calling-Station-ID' );
 
-ok( $record1->{'Packet-Type'} eq '1', 'Packet-Type' );
-ok( $record1->{'Reason-Code'} eq '0', 'Reason-Code' );
+is( $record1->{'Packet-Type'}, '1', 'Packet-Type' );
+is( $record1->{'Reason-Code'}, '0', 'Reason-Code' );

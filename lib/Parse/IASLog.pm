@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use vars qw($VERSION);
 
-$VERSION = '1.06';
+$VERSION = '1.08';
 
 my %attributes = qw(
 -90 MS-MPPE-Encryption-Types
@@ -2068,7 +2068,7 @@ Internet Authentication Service (IAS) log format, where attributes are logged as
 The parser takes lines of IAS-formatted text and returns on successful parsing a hashref record containing
 the applicable RADIUS attributes and values.
 
-The module provides a perl implementation of the Iasparse tool.
+The module provides a perl implementation of the C<Iasparse> tool.
 
 =head1 FUNCTION INTERFACE
 
@@ -2076,7 +2076,7 @@ Using the module automagically imports 'parse_ias' into your namespace.
 
 =over
 
-=item parse_ias
+=item c<parse_ias>
 
 Takes a string of IAS-formatted text as the first parameter. Subsequent parameter pairs are treated as 
 options. See new() for full details regarding optional parameters.
@@ -2091,7 +2091,7 @@ See below for the format of the hashref returned.
 
 =over 
 
-=item new
+=item C<new>
 
 Creates a new Parse::IASLog object. Takes one optional parameter:
 
@@ -2104,11 +2104,11 @@ Creates a new Parse::IASLog object. Takes one optional parameter:
 
 =over 
 
-=item parse
+=item C<parse>
 
 Takes a string of IAS-formatted text. Returns a hashref on success or undef on failure.
 
-The hashref will contain RADIUS attributes as keys. The following 'header' attributes should always
+The hashref will contain RADIUS attributes as keys. The following C<header> attributes should always
 be present:
 
   'NAS-IP-Address', The IP address of the NAS sending the request;
@@ -2126,7 +2126,7 @@ Chris C<BinGOs> Williams <chris@bingosnet.co.uk>
 
 =head1 LICENSE
 
-Copyright C<(c)> Chris Williams
+Copyright E<copy> Chris Williams
 
 This module may be used, modified, and distributed under the same terms as Perl itself. Please see the license that came with your Perl distribution for details.
 

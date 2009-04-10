@@ -1,6 +1,11 @@
 Change log for Parse::IASLog
 ============================
 
+1.08	Fri Apr 10 22:47:47 BST 2009
+	- Tidied up documentation formatting.
+	- auto set repo in meta.yml
+	- fix one of the tests to actually test the OO API
+
 1.06	Mon May  5 08:47:04 BST 2008
 	- Removed kwalitee test, added license info
 
