@@ -1,6 +1,9 @@
 Change log for Parse::IASLog
 ============================
 
+1.10	Mon May 25 22:25:08 BST 2009
+	- Makefile.PL: auto_license, auto_provides and githubmeta
+
 1.08	Fri Apr 10 22:47:47 BST 2009
 	- Tidied up documentation formatting.
 	- auto set repo in meta.yml
