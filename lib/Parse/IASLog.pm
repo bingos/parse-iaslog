@@ -9,1979 +9,2174 @@ use strict;
 use warnings;
 use vars qw($VERSION);
 
-$VERSION = '1.10';
+$VERSION = '1.12';
 
-my %attributes = qw(
--90 MS-MPPE-Encryption-Types
--89 MS-MPPE-Encryption-Policy
--88 MS-BAP-Usage
--87 MS-Link-Drop-Time-Limit
--86 MS-Link-Utilization-Threshold
-1 User-Name
-2 User-Password
-3 CHAP-Password
-4 NAS-IP-Address
-5 NAS-Port
-6 Service-Type
-7 Framed-Protocol
-8 Framed-IP-Address
-9 Framed-IP-Netmask
-10 Framed-Routing
-11 Filter-ID
-12 Framed-MTU
-13 Framed-Compression
-14 Login-IP-Host
-15 Login-Service
-16 Login-TCP-Port
-18 Reply-Message
-19 Callback-Number
-20 Callback-ID
-22 Framed-Route
-23 Framed-IPX-Network
-24 State
-25 Class
-26 Vendor-Specific
-27 Session-Timeout
-28 Idle-Timeout
-29 Termination-Action
-30 Called-Station-ID
-31 Calling-Station-ID
-32 NAS-Identifier
-33 Proxy-State
-34 Login-LAT-Service
-35 Login-LAT-Node
-36 Login-LAT-Group
-37 Framed-AppleTalk-Link
-38 Framed-AppleTalk-Network
-39 Framed-AppleTalk-Zone
-40 Acct-Status-Type
-41 Acct-Delay-Time
-42 Acct-Input-Octets
-43 Acct-Output-Octets
-44 Acct-Session-ID
-45 Acct-Authentic
-46 Acct-Session-Time
-47 Acct-Input-Packets
-48 Acct-Output-Packets
-49 Acct-Terminate-Cause
-50 Acct-Multi-Session-ID
-51 Acct-Link-Count
-52 Acct-Input-Gigawords
-53 Acct-Output-Gigawords
-55 Event-Timestamp
-60 CHAP-Challenge
-61 NAS-Port-Type
-62 Port-Limit
-63 Login-LAT-Port
-64 Tunnel-Type
-65 Tunnel-Medium-Type
-66 Tunnel-Client-Endpt
-67 Tunnel-Server-Endpt
-68 Acct-Tunnel-Connection
-69 Tunnel-Password
-70 ARAP-Password
-71 ARAP-Features
-72 ARAP-Zone-Access
-73 ARAP-Security
-74 ARAP-Security-Data
-75 Password-Retry
-76 Prompt
-77 Connect-Info
-78 Configuration-Token
-79 EAP-Message
-80 Message-Authenticator
-81 Tunnel-Pvt-Group-ID
-82 Tunnel-Assignment-ID
-83 Tunnel-Preference
-84 ARAP-Challenge-Response
-85 Acct-Interim-Interval
-86 Acct-Tunnel-Packets-Lost
-87 NAS-Port-ID
-88 Framed-Pool
-90 Tunnel-Client-Auth-ID
-91 Tunnel-Server-Auth-ID
-107 Ascend-Calling-Subaddress
-108 Ascend-Callback-Delay
-109 Ascend-Endpoint-Disc
-110 Ascend-Remote-FW
-111 Ascend-Multicast-G-Leave-Delay
-112 Ascend-CBCP-Enable
-113 Ascend-CBCP-Mode
-114 Ascend-CBCP-Delay
-115 Ascend-CBCP-Trunk-Group
-116 Ascend-Appletalk-Route
-117 Ascend-Appletalk-Peer-Mode
-118 Ascend-Route-Appletalk
-119 Ascend-FCP-Parameter
-120 Ascend-Modem-Port-No
-121 Ascend-Modem-Slot-No
-122 Ascend-Modem-Shelf-No
-123 Ascend-CallAttempt-Limit
-124 Ascend-CallBlock-Duration
-125 Ascend-Maximum-Call-Duration
-126 Ascend-Route-Preference
-127 Ascend-Tunneling-Protocol
-128 Ascend-Shared-Profile-Enable
-129 Ascend-Primary-Home-Agent
-130 Ascend-Secondary-Home-Agent
-131 Ascend-Dialout-Allowed
-132 Ascend-Client-Gateway
-133 Ascend-BACP-Enable
-134 Ascend-DHCP-Maximum-Leases
-135 Ascend-Client-Primary-DNS
-136 Ascend-Client-Secondary-DNS
-137 Ascend-Client-Assign-DNS
-138 Ascend-User-Acct-Type
-139 Ascend-User-Acct-Host
-140 Ascend-User-Acct-Port
-141 Ascend-User-Acct-Key
-142 Ascend-User-Acct-Base
-143 Ascend-User-Acct-Time
-144 Ascend-Assign-IP-Client
-145 Ascend-Assign-IP-Server
-146 Ascend-Assign-IP-Global-Pool
-147 Ascend-DHCP-Reply
-148 Ascend-DHCP-Pool-Number
-149 Ascend-Expect-Callback
-150 Ascend-Event-Type
-151 Ascend-Session-Svr-Key
-152 Ascend-Multicast-Rate-Limit
-153 Ascend-IF-Netmask
-154 Ascend-Remote-Addr
-155 Ascend-Multicast-Client
-156 Ascend-FR-Circuit-Name
-157 Ascend-FR-Link-Up
-158 Ascend-FR-Nailed-Grp
-159 Ascend-FR-Type
-160 Ascend-FR-Link-Mgt
-161 Ascend-FR-N391
-162 Ascend-FR-DCE-N392
-163 Ascend-FR-DTE-N392
-164 Ascend-FR-DCE-N393
-165 Ascend-FR-DTE-N393
-166 Ascend-FR-T391
-167 Ascend-FR-T392
-168 Ascend-Bridge-Address
-169 Ascend-TS-Idle-Limit
-170 Ascend-TS-Idle-Mode
-171 Ascend-DBA-Monitor
-172 Ascend-Base-Channel-Count
-173 Ascend-Minimum-Channels
-174 Ascend-IPX-Route
-175 Ascend-FT1-Caller
-176 Ascend-Backup
-177 Ascend-Call-Type
-178 Ascend-Group
-179 Ascend-FR-DLCI
-180 Ascend-FR-Profile-Name
-181 Ascend-Ara-PW
-182 Ascend-IPX-Node-Addr
-183 Ascend-Home-Agent-IP-Addr
-184 Ascend-Home-Agent-Password
-185 Ascend-Home-Network-Name
-186 Ascend-Home-Agent-UDP-Port
-187 Ascend-Multilink-ID
-188 Ascend-Num-In-Multilink
-189 Ascend-First-Dest
-190 Ascend-Pre-Input-Octets
-191 Ascend-Pre-Output-Octets
-192 Ascend-Pre-Input-Packets
-193 Ascend-Pre-Output-Packets
-194 Ascend-Maximum-Time
-195 Ascend-Disconnect-Cause
-196 Ascend-Connect-Progress
-197 Ascend-Data-Rate
-198 Ascend-Pre-Session-Time
-199 Ascend-Token-Idle
-200 Ascend-Token-Immediate
-201 Ascend-Require-Auth
-202 Ascend-Number-Sessions
-203 Ascend-Authen-Alias
-204 Ascend-Token-Expiry
-205 Ascend-Menu-Selector
-206 Ascend-Menu-Item
-207 Ascend-PW-Warntime
-208 Ascend-PW-Lifetime
-209 Ascend-IP-Direct
-210 Ascend-PPP-VJ-Slot-Comp
-211 Ascend-PPP-VJ-1172
-212 Ascend-PPP-Async-Map
-213 Ascend-Third-Prompt
-214 Ascend-Send-Secret
-215 Ascend-Receive-Secret
-216 Ascend-IPX-PeerMode
-217 Ascend-IP-Pool-Definition
-218 Ascend-Assign-IP-Pool
-219 Ascend-FR-Direct
-220 Ascend-FR-Direct-Profile
-221 Ascend-FR-Direct-DLCI
-222 Ascend-Handle-IPX
-223 Ascend-Netware-Timeout
-224 Ascend-IPX-Alias
-225 Ascend-Metric
-226 Ascend-PRI-Number-Type
-227 Ascend-Dial-Number
-228 Ascend-Route-IP
-229 Ascend-Route-IPX
-230 Ascend-Bridge
-231 Ascend-Send-Auth
-232 Ascend-Send-Passwd
-233 Ascend-Link-Compression
-234 Ascend-Target-Util
-235 Ascend-Maximum-Channels
-236 Ascend-Inc-Channel-Count
-237 Ascend-Dec-Channel-Count
-238 Ascend-Seconds-Of-History
-239 Ascend-History-Weigh-Type
-240 Ascend-Add-Seconds
-241 Ascend-Remove-Seconds
-242 Ascend-Data-Filter
-243 Ascend-Call-Filter
-244 Ascend-Idle-Limit
-245 Ascend-Preempt-Limit
-246 Ascend-Callback
-247 Ascend-Data-Svc
-248 Ascend-Force56
-249 Ascend-Billing-Number
-250 Ascend-Call-By-Call
-251 Ascend-Transit-Number
-252 Ascend-Host-Info
-253 Ascend-PPP-Address
-254 Ascend-MPP-Idle-Percent
-255 Ascend-Xmit-Rate
-4096 Saved-Radius-Framed-IP-Address
-4097 Saved-Radius-Callback-Number
-4098 NP-Calling-Station-ID
-4099 Saved-NP-Calling-Station-ID
-4100 Saved-Radius-Framed-Route
-4101 Ignore-User-Dialin-Properties
-4102 Day-And-Time-Restrictions
-4103 NP-Called-Station-ID
-4104 NP-Allowed-Port-Types
-4105 NP-Authentication-Type
-4106 NP-Allowed-EAP-Type
-4107 Shared-Secret
-4108 Client-IP-Address
-4109 Client-Packet-Header
-4110 Token-Groups
-4111 NP-Allow-Dial-in
-4112 Request-ID
-4113 Manipulation-Target
-4114 Manipulation-Rule
-4115 Original-User-Name
-4116 Client-Vendor
-4117 Client-UDP-Port
-4118 MS-CHAP-Challenge
-4119 MS-CHAP-Response
-4120 MS-CHAP-Domain
-4121 MS-CHAP-Error
-4122 MS-CHAP-CPW-1
-4123 MS-CHAP-CPW-2
-4124 MS-CHAP-LM-Enc-PW
-4125 MS-CHAP-NT-Enc-PW
-4126 MS-CHAP-MPPE-Keys
-4127 Authentication-Type
-4128 Client-Friendly-Name
-4129 SAM-Account-Name
-4130 Fully-Qualifed-User-Name
-4131 Windows-Groups
-4132 EAP-Friendly-Name
-4133 Auth-Provider-Type
-4134 MS-Acct-Auth-Type
-4135 MS-Acct-EAP-Type
-4136 Packet-Type
-4137 Auth-Provider-Name
-4138 Acct-Provider-Type
-4139 Acct-Provider-Name
-4140 MS-MPPE-Send-Key
-4141 MS-MPPE-Recv-Key
-4142 Reason-Code
-4143 MS-Filter
-4144 MS-CHAP2-Response
-4145 MS-CHAP2-Success
-4146 MS-CHAP2-CPW
-4147 MS-RAS-Vendor
-4148 MS-RAS-Version
-4149 NP-Policy-Name
-4150 MS-Primary-DNS-Server
-4151 MS-Secondary-DNS-Server
-4152 MS-Primary-NBNS-Server
-4153 MS-Secondary-NBNS-Server
-4154 Proxy-Policy-Name
-4155 Provider-Type
-4156 Provider-Name
-4157 Remote-Server-Address
-4158 Generate-Class-Attribute
-4159 MS-RAS-Client-Name
-4160 MS-RAS-Client-Version
-4161 Allowed-Certificate-OID
-4162 Extension-State
-4163 Generate-Session-Timeout
-4164 MS-Session-Timeout
-4165 MS-Quarantine-IPFilter
-4166 MS-Quarantine-Session-Timeout
-4167 MS-User-Security-Identity
-4168 Remote-RADIUS-to-Windows-User-Mapping
-4169 Passport-User-Mapping-UPN-Suffix
-4170 Tunnel-Tag
-4171 NP-PEAPUpfront-Enabled
-5000 Cisco-AV-Pair
-6000 Nortel-Port-QOS
-6001 Nortel-Port-Priority
-8097 Certificate-EKU
-8098 EAP-Configuration
-8099 MS-PEAP-Embedded-EAP-TypeId
-8100 MS-PEAP-Fast-Roamed-Session
-8101 IAS-EAP-TypeId
-8102 EAP-TLV
-8103 Reject-Reason-Code
-8104 Proxy-EAP-Configuration
-8105 Session
-8106 Is-Replay
-8107 Clear-Text-Password
-11000 USR-Last-Number-Dialed-Out
-11001 USR-Last-Number-Dialed-In-DNIS
-11002 USR-Last-Callers-Number-ANI
-11003 USR-Channel
-11004 USR-Event-ID
-11005 USR-Event-Date-Time
-11006 USR-Call-Start-Date-Time
-11007 USR-Call-End-Date-Time
-11008 USR-Default-DTE-Data-Rate
-11009 USR-Initial-Rx-Link-Data-Rate
-11010 USR-Final-Rx-Link-Data-Rate
-11011 USR-Initial-Tx-Link-Data-Rate
-11012 USR-Final-Tx-Link-Data-Rate
-11013 USR-Chassis-Temperature
-11014 USR-Chassis-Temp-Threshold
-11015 USR-Actual-Voltage
-11016 USR-Expected-Voltage
-11017 USR-Power-Supply-Number
-11018 USR-Card-Type
-11019 USR-Chassis-Slot
-11020 USR-Sync-Async-Mode
-11021 USR-Originate-Answer-Mode
-11022 USR-Modulation-Type
-11023 USR-Initial-Modulation-Type
-11024 USR-Connect-Term-Reason
-11025 USR-Failure-to-Connect-Reason
-11026 USR-Equalization-Type
-11027 USR-Fallback-Enabled
-11028 USR-Connect-Time-Limit
-11029 USR-Number-of-Rings-Limit
-11030 USR-DTE-Data-Idle-Timout
-11031 USR-Characters-Sent
-11032 USR-Characters-Received
-11033 USR-Blocks-Sent
-11034 USR-Blocks-Received
-11035 USR-Blocks-Resent
-11036 USR-Retrains-Requested
-11037 USR-Retrains-Granted
-11038 USR-Line-Reversals
-11039 USR-Number-Of-Characters-Lost
-11040 USR-Number-of-Blers
-11041 USR-Number-of-Link-Timeouts
-11042 USR-Number-of-Fallbacks
-11043 USR-Number-of-Upshifts
-11044 USR-Number-of-Link-NAKs
-11045 USR-DTR-False-Timeout
-11046 USR-Fallback-Limit
-11047 USR-Block-Error-Count-Limit
-11048 USR-DTR-True-Timeout
-11049 USR-Security-Login-Limit
-11050 USR-Security-Resp-Limit
-11051 USR-DTE-Ring-No-Answer-Limit
-11052 USR-Back-Channel-Data-Rate
-11053 USR-Simplified-MNP-Levels
-11054 USR-Simplified-V42bis-Usage
-11055 USR-Mbi-Ct-PRI-Card-Slot
-11056 USR-Mbi-Ct-TDM-Time-Slot
-11057 USR-Mbi-Ct-PRI-Card-Span-Line
-11058 USR-Mbi-Ct-BChannel-Used
-11059 USR-Physical-State
-11060 USR-Packet-Bus-Session
-11061 USR-Server-Time
-11062 USR-Channel-Connected-To
-11063 USR-Slot-Connected-To
-11064 USR-Device-Connected-To
-11065 USR-NFAS-ID
-11066 USR-Q931-Call-Reference-Value
-11067 USR-Call-Event-Code
-11068 USR-DS0
-11069 USR-DS0s
-11070 USR-Gateway-IP-Address
-11071 USR-Call-Arrival-in-GMT
-11072 USR-Call-Connect-in-GMT
-11073 USR-Call-Terminate-in-GMT
-11074 USR-IDS0-Call-Type
-11075 USR-Call-Reference-Number
-11076 USR-CDMA-Call-Reference-Number
-11077 USR-Mobile-IP-Address
-11078 USR-IWF-IP-Address
-11079 USR-Called-Party-Number
-11080 USR-Calling-Party-Number
-11081 USR-Call-Type
-11082 USR-ESN
-11083 USR-IWF-Call-Identifier
-11084 USR-IMSI
-11085 USR-Service-Option
-11086 USR-Disconnect-Cause-Indicator
-11087 USR-Mobile-NumBytes-Txed
-11088 USR-Mobile-NumBytes-Rxed
-11089 USR-Num-Fax-Pages-Processed
-11090 USR-Compression-Type
-11091 USR-Call-Error-Code
-11092 USR-Modem-Setup-Time
-11093 USR-Call-Connecting-Time
-11094 USR-Connect-Time
-11095 USR-RMMIE-Manufacutere-ID
-11096 USR-RMMIE-Product-Code
-11097 USR-RMMIE-Serial-Number
-11098 USR-RMMIE-Firmware-Version
-11099 USR-RMMIE-Firmware-Build-Date
-11100 USR-RMMIE-Status
-11101 USR-RMMIE-Num-Of-Updates
-11102 USR-RMMIE-x2-Status
-11103 USR-RMMIE-Planned-Disconnect
-11104 USR-RMMIE-Last-Update-Time
-11105 USR-RMMIE-Last-Update-Event
-11106 USR-RMMIE-Rcv-Tot-PwrLvl
-11107 USR-RMMIE-Rcv-PwrLvl-3300Hz
-11108 USR-RMMIE-Rcv-PwrLvl-3750Hz
-11109 USR-RMMIE-PwrLvl-NearEcho-Canc
-11110 USR-RMMIE-PwrLvl-FarEcho-Canc
-11111 USR-RMMIE-PwrLvl-Noise-Lvl
-11112 USR-RMMIE-PwrLvl-Xmit-Lvl
-11113 USR-PW-USR-IFilter-IP
-11114 USR-PW-USR-IFilter-IPX
-11115 USR-PW-USR-IFilter-SAP
-11116 USR-PW-USR-OFilter-IP
-11117 USR-PW-USR-OFilter-IPX
-11118 USR-PW-USR-OFilter-SAP
-11119 USR-PW-VPN-ID
-11120 USR-PW-VPN-Name
-11121 USR-PW-VPN-Neighbor
-11122 USR-PW-Framed-Routing-V2
-11123 USR-PW-VPN-Gateway
-11124 USR-PW-Tunnel-Authentication
-11125 USR-PW-Index
-11126 USR-PW-Cutoff
-11127 USR-PW-Packet
-11128 USR-Primary-DNS-Server
-11129 USR-Secondary-DNS-Server
-11130 USR-Primary-NBNS-Server
-11131 USR-Secondary-NBNS-Server
-11132 USR-Syslog-Tap
-11133 USR-Log-Filter-Packet
-11134 USR-Chassis-Call-Slot
-11135 USR-Chassis-Call-Span
-11136 USR-Chassis-Call-Channel
-11137 USR-Keypress-Timeout
-11138 USR-Unauthenticated-Time
-11139 USR-VPN-Encryptor
-11140 USR-VPN-GW-Location-ID
-11141 USR-Re-Chap-Timeout
-11142 USR-CCP-Algorithm
-11143 USR-ACCM-Type
-11144 USR-Connect-Speed
-11145 USR-Framed-IP-Address-Pool-Name
-11146 USR-MP-EDO
-11147 USR-Local-Framed-IP-Addr
-11148 USR-Framed-IPX-Route
-11149 USR-MPIP-Tunnel-Originator
-11150 USR-Bearer-Capabilities
-11151 USR-Speed-Of-Connection
-11152 USR-Max-Channels
-11153 USR-Channel-Expansion
-11154 USR-Channel-Decrement
-11155 USR-Expansion-Algorithm
-11156 USR-Compression-Algorithm
-11157 USR-Receive-Acc-Map
-11158 USR-Transmit-Acc-Map
-11159 USR-Compression-Reset-Mode
-11160 USR-Min-Compression-Size
-11161 USR-IP
-11162 USR-IPX
-11163 USR-Filter-Zones
-11164 USR-Appletalk
-11165 USR-Bridging
-11166 USR-Spoofing
-11167 USR-Host-Type
-11168 USR-Send-Name
-11169 USR-Send-Password
-11170 USR-Start-Time
-11171 USR-End-Time
-11172 USR-Send-Script1
-11173 USR-Reply-Script1
-11174 USR-Send-Script2
-11175 USR-Reply-Script2
-11176 USR-Send-Script3
-11177 USR-Reply-Script3
-11178 USR-Send-Script4
-11179 USR-Reply-Script4
-11180 USR-Send-Script5
-11181 USR-Reply-Script5
-11182 USR-Send-Script6
-11183 USR-Reply-Script6
-11184 USR-Terminal-Type
-11185 USR-Appletalk-Network-Range
-11186 USR-Local-IP-Address
-11187 USR-Routing-Protocol
-11188 USR-Modem-Group
-11189 USR-IPX-Routing
-11190 USR-IPX-WAN
-11191 USR-IP-RIP-Policies
-11192 USR-IP-RIP-Simple-Auth-Password
-11193 USR-IP-RIP-Input-Filter
-11194 USR-IP-Call-Input-Filter
-11195 USR-IPX-RIP-Input-Filter
-11196 USR-MP-MRRU
-11197 USR-IPX-Call-Input-Filter
-11198 USR-AT-Input-Filter
-11199 USR-AT-RTMP-Input-Filter
-11200 USR-AT-Zip-Input-Filter
-11201 USR-AT-Call-Input-Filter
-11202 USR-ET-Bridge-Input-Filter
-11203 USR-IP-RIP-Output-Filter
-11204 USR-IP-Call-Output-Filter
-11205 USR-IPX-RIP-Output-Filter
-11206 USR-IPX-Call-Output-Filter
-11207 USR-AT-Output-Filter
-11208 USR-AT-RTMP-Output-Filter
-11209 USR-AT-Zip-Output-Filter
-11210 USR-AT-Call-Output-Filter
-11211 USR-ET-Bridge-Output-Filter
-11212 USR-ET-Bridge-Call-Output-Filter
-11213 USR-IP-Default-Route-Option
-11214 USR-MP-EDO-HIPER
-11215 USR-Modem-Training-Time
-11216 USR-Interface-Index
-11217 USR-Tunnel-Security
-11218 USR-Port-Tap
-11219 USR-Port-Tap-Format
-11220 USR-Port-Tap-Output
-11221 USR-Port-Tap-Facility
-11222 USR-Port-Tap-Priority
-11223 USR-Port-Tap-Address
-11224 USR-MobileIP-Home-Agent-Address
-11225 USR-Tunneled-MLPP
-11226 USR-Multicast-Proxy
-11227 USR-Multicast-Receive
-11228 USR-Multicast-Forwarding
-11229 USR-IGMP-Query-Interval
-11230 USR-IGMP-Maximum-Response-Time
-11231 USR-IGMP-Robustness
-11232 USR-IGMP-Version
-11233 USR-IGMP-Routing
-11234 USR-VTS-Session-Key
-11235 USR-Orig-NAS-Type
-11236 USR-Call-Arrival-Time
-11237 USR-Call-End-Time
-11238 USR-Rad-Multicast-Routing-Ttl
-11239 USR-Rad-Multicast-Routing-Rate-Limit
-11240 USR-Rad-Multicast-Routing-Protocol
-11241 USR-Rad-Multicast-Routing-Boundary
-11242 USR-Rad-Dvmrp-Metric
-11243 USR-Chat-Script-Name
-11244 USR-Chat-Script-Rules
-11245 USR-Rad-Location-Type
-11246 USR-Tunnel-Switch-Endpoint
-11247 USR-OSPF-Addressless-Index
-11248 USR-Callback-Type
-11249 USR-Tunnel-Auth-Hostname
-11250 USR-Acct-Reason-Code
-11251 USR-DNIS-ReAuthentication
-11252 USR-PPP-Source-IP-Filter
-11253 USR-Auth-Mode
-11254 USR-NAS-Type
-11255 USR-Request-Type
+my %attributes = (
+'-91'   => { 'name' => 'EAP-Protocol' },
+'-90'   => {
+           'enum' => { '4' => 'Strongest Encryption' },
+           'name' => 'MS-MPPE-Encryption-Types',
+           },
+'-89'   => { 'name' => 'MS-MPPE-Encryption-Policy' },
+'-88'   => { 'name' => 'MS-BAP-Usage' },
+'-87'   => { 'name' => 'MS-Link-Drop-Time-Limit' },
+'-86'   => { 'name' => 'MS-Link-Utilization-Threshold' },
+'-85'   => { 'name' => 'Allowed-Port-Type' },
+'1'     => { 'name' => 'User-Name' },
+'2'     => { 'name' => 'User-Password' },
+'3'     => { 'name' => 'CHAP-Password' },
+'4'     => { 'name' => 'NAS-IP-Address' },
+'5'     => { 'name' => 'NAS-Port' },
+'6'     => {
+           'enum' => {
+                     '1'  => 'Login',
+                     '2'  => 'Framed',
+                     '3'  => 'Callback Login',
+                     '4'  => 'Callback Framed',
+                     '5'  => 'Outbound',
+                     '6'  => 'Administrative',
+                     '7'  => 'NAS Prompt',
+                     '8'  => 'Authenticate Only',
+                     '9'  => 'Callback Nas Prompt',
+                     '10' => 'Call Check',
+                     '11' => 'Callback Administrative',
+                     '12' => 'Authorize only',
+                     },
+           'name' => 'Service-Type',
+           },
+'7'     => {
+           'enum' => {
+                     '1'   => 'PPP',
+                     '2'   => 'SLIP',
+                     '3'   => 'AppleTalk Remote Access Protocol (ARAP)',
+                     '4'   => 'Gandalf Proprietary SingleLink/MultiLink protocol',
+                     '5'   => 'Xylogics proprietary IPX/SLIP',
+                     '6'   => 'X.75 Synchronous',
+                     '256' => 'MPP',
+                     '257' => 'EURAW',
+                     '258' => 'EUUI',
+                     '259' => 'X25',
+                     '260' => 'COMB',
+                     '261' => 'FR',
+                     },
+           'name' => 'Framed-Protocol',
+           },
+'8'     => { 'name' => 'Framed-IP-Address' },
+'9'     => { 'name' => 'Framed-IP-Netmask' },
+'10'    => {
+           'enum' => { '0' => 'None', '1' => 'Send', '2' => 'Listen', '3' => 'Send-Listen' },
+           'name' => 'Framed-Routing',
+           },
+'11'    => { 'name' => 'Filter-Id' },
+'12'    => { 'name' => 'Framed-MTU' },
+'13'    => {
+           'enum' => {
+                     '0' => 'None',
+                     '1' => 'Van Jacobson TCP/IP header compression',
+                     '2' => 'IPX Header compression',
+                     '3' => 'Stac-LZS compression',
+                     },
+           'name' => 'Framed-Compression',
+           },
+'14'    => { 'name' => 'Login-IP-Host' },
+'15'    => {
+           'enum' => {
+                     '0' => 'Telnet',
+                     '1' => 'Rlogin',
+                     '2' => 'TCP Clear',
+                     '3' => 'Portmaster (proprietary)',
+                     '4' => 'LAT',
+                     '5' => 'X25-PAD',
+                     '6' => 'X25-T3POS',
+                     '8' => 'TCP Clear Quiet (suppresses any NAS-generated connect string)',
+                     },
+           'name' => 'Login-Service',
+           },
+'16'    => { 'name' => 'Login-TCP-Port' },
+'18'    => { 'name' => 'Reply-Message' },
+'19'    => { 'name' => 'Callback-Number' },
+'20'    => { 'name' => 'Callback-ID' },
+'22'    => { 'name' => 'Framed-Route' },
+'23'    => { 'name' => 'Framed-IPX-Network' },
+'24'    => { 'name' => 'State' },
+'25'    => { 'name' => 'Class' },
+'26'    => { 'name' => 'Vendor-Specific' },
+'27'    => { 'name' => 'Session-Timeout' },
+'28'    => { 'name' => 'Idle-Timeout' },
+'29'    => {
+           'enum' => { '0' => 'Default', '1' => 'RADIUS-Request' },
+           'name' => 'Termination-Action',
+           },
+'30'    => { 'name' => 'Called-Station-ID' },
+'31'    => { 'name' => 'Calling-Station-ID' },
+'32'    => { 'name' => 'NAS-Identifier' },
+'33'    => { 'name' => 'Proxy-State' },
+'34'    => { 'name' => 'Login-LAT-Service' },
+'35'    => { 'name' => 'Login-LAT-Node' },
+'36'    => { 'name' => 'Login-LAT-Group' },
+'37'    => { 'name' => 'Framed-AppleTalk-Link' },
+'38'    => { 'name' => 'Framed-AppleTalk-Network' },
+'39'    => { 'name' => 'Framed-AppleTalk-Zone' },
+'40'    => {
+           'enum' => {
+                     '1'  => 'Start',
+                     '2'  => 'Stop',
+                     '3'  => 'Interim Update',
+                     '7'  => 'Accounting-On',
+                     '8'  => 'Accounting-Off',
+                     '9'  => 'Tunnel-Start',
+                     '10' => 'Tunnel-Stop',
+                     '11' => 'Tunnel-Reject',
+                     '12' => 'Tunnel-Link-Start',
+                     '13' => 'Tunnel-Link-Stop',
+                     '14' => 'Tunnel-Link-Reject',
+                     '15' => 'Failed',
+                     },
+           'name' => 'Acct-Status-Type',
+           },
+'41'    => { 'name' => 'Acct-Delay-Time' },
+'42'    => { 'name' => 'Acct-Input-Octets' },
+'43'    => { 'name' => 'Acct-Output-Octets' },
+'44'    => { 'name' => 'Acct-Session-Id' },
+'45'    => {
+           'enum' => { '0' => 'None', '1' => 'RADIUS', '2' => 'Local', '3' => 'Remote' },
+           'name' => 'Acct-Authentic',
+           },
+'46'    => { 'name' => 'Acct-Session-Time' },
+'47'    => { 'name' => 'Acct-Input-Packets' },
+'48'    => { 'name' => 'Acct-Output-Packets' },
+'49'    => {
+           'enum' => {
+                     '1'  => 'User-Request',
+                     '2'  => 'Lost-Carrier',
+                     '3'  => 'Lost-Service',
+                     '4'  => 'Idle-Timeout',
+                     '5'  => 'Session-Timeout',
+                     '6'  => 'Admin-Reset',
+                     '7'  => 'Admin-Reboot',
+                     '8'  => 'Port-Error',
+                     '9'  => 'NAS-Error',
+                     '10' => 'NAS-Request',
+                     '11' => 'NAS-Reboot',
+                     '12' => 'Port-Unneeded',
+                     '13' => 'Port-Preempted',
+                     '14' => 'Port-Suspended',
+                     '15' => 'Service-Unavailable',
+                     '16' => 'Callback',
+                     '17' => 'User-Error',
+                     '18' => 'Host-Request',
+                     '19' => 'Supplicant-Restart',
+                     '20' => 'Reauthentication-Failure',
+                     '21' => 'Port-Reinit',
+                     '22' => 'Port-Disabled',
+                     },
+           'name' => 'Acct-Terminate-Cause',
+           },
+'50'    => { 'name' => 'Acct-Multi-Session-Id' },
+'51'    => { 'name' => 'Acct-Link-Count' },
+'52'    => { 'name' => 'Acct-Input-Gigawords' },
+'53'    => { 'name' => 'Acct-Output-Gigawords' },
+'55'    => { 'name' => 'Event-Timestamp' },
+'60'    => { 'name' => 'CHAP-Challenge' },
+'61'    => {
+           'enum' => {
+                     '0'  => 'Async (Modem)',
+                     '1'  => 'Sync (T1 Line)',
+                     '2'  => 'ISDN Sync',
+                     '3'  => 'ISDN Async V.120',
+                     '4'  => 'ISDN Async V.110',
+                     '5'  => 'Virtual (VPN)',
+                     '6'  => 'PIAFS',
+                     '7'  => 'HDLC Clear Channel',
+                     '8'  => 'X.25',
+                     '9'  => 'X.75',
+                     '10' => 'G.3 Fax',
+                     '11' => 'SDSL - Symmetric DSL',
+                     '12' => 'ADSL-CAP - Asymmetric DSL Carrierless Amplitude Phase Modulation',
+                     '13' => 'ADSL-DMT - Asymmetric DSL Discrete Multi-Tone',
+                     '14' => 'IDSL - ISDN Digital Subscriber Line',
+                     '15' => 'Ethernet',
+                     '16' => 'xDSL - Digital Subscriber Line of unknown type',
+                     '17' => 'Cable',
+                     '18' => 'Wireless - Other',
+                     '19' => 'Wireless - IEEE 802.11',
+                     '20' => 'Token Ring',
+                     '21' => 'FDDI',
+                     },
+           'name' => 'NAS-Port-Type',
+           },
+'62'    => { 'name' => 'Port-Limit' },
+'63'    => { 'name' => 'Login-LAT-Port' },
+'64'    => {
+           'enum' => {
+                     '1'  => 'Point-to-Point Tunneling Protocol (PPTP)',
+                     '2'  => 'Layer Two Forwarding (L2F)',
+                     '3'  => 'Layer Two Tunneling Protocol (L2TP)',
+                     '4'  => 'Ascend Tunnel Management Protocol (ATMP)',
+                     '5'  => 'Virtual Tunneling Protocol (VTP)',
+                     '6'  => 'IP Authentication Header in the Tunnel-mode (AH)',
+                     '7'  => 'IP-in-IP Encapsulation (IP-IP)',
+                     '8'  => 'Minimal IP-in-IP Encapsulation (MIN-IP-IP)',
+                     '9'  => 'IP Encapsulating Security Payload in the Tunnel-mode (ESP)',
+                     '10' => 'Generic Route Encapsulation (GRE)',
+                     '11' => 'Bay Dial Virtual Services (DVS)',
+                     '12' => 'IP-in-IP Tunneling',
+                     '13' => 'Virtual LANs (VLAN)',
+                     },
+           'name' => 'Tunnel-Type',
+           },
+'65'    => {
+           'enum' => {
+                     '1'  => 'IP (IP version 4)',
+                     '2'  => 'IP6 (IP version 6)',
+                     '3'  => 'NSAP',
+                     '4'  => 'HDLC (8-bit multidrop)',
+                     '5'  => 'BBN 1822',
+                     '6'  => '802 (includes all 802 media plus Ethernet canonical format)',
+                     '7'  => 'E.163 (POTS)',
+                     '8'  => 'E.164 (SMDS Frame Relay ATM)',
+                     '9'  => 'F.69 (Telex)',
+                     '10' => 'X.121 (X.25 Frame Relay)',
+                     '11' => 'IPX',
+                     '12' => 'Appletalk',
+                     '13' => 'Decnet IV',
+                     '14' => 'Banyan Vines',
+                     '15' => 'E.164 with NSAP format subaddress',
+                     },
+           'name' => 'Tunnel-Medium-Type',
+           },
+'66'    => { 'name' => 'Tunnel-Client-Endpt' },
+'67'    => { 'name' => 'Tunnel-Server-Endpt' },
+'68'    => { 'name' => 'Acct-Tunnel-Connection' },
+'69'    => { 'name' => 'Tunnel-Password' },
+'70'    => { 'name' => 'ARAP-Password' },
+'71'    => { 'name' => 'ARAP-Features' },
+'72'    => {
+           'enum' => {
+                     '1' => 'Only allow access to default zone',
+                     '2' => 'Use zone filter inclusively',
+                     '3' => '(not used)',
+                     '4' => 'Use zone filter exclusively',
+                     },
+           'name' => 'ARAP-Zone-Access',
+           },
+'73'    => { 'name' => 'ARAP-Security' },
+'74'    => { 'name' => 'ARAP-Security-Data' },
+'75'    => { 'name' => 'Password-Retry' },
+'76'    => { 'enum' => { '0' => 'No Echo', '1' => 'Echo' }, 'name' => 'Prompt' },
+'77'    => { 'name' => 'Connect-Info' },
+'78'    => { 'name' => 'Configuration-Token' },
+'79'    => { 'name' => 'EAP-Message' },
+'80'    => { 'name' => 'Message-Authenticator' },
+'81'    => { 'name' => 'Tunnel-Pvt-Group-ID' },
+'82'    => { 'name' => 'Tunnel-Assignment-ID' },
+'83'    => { 'name' => 'Tunnel-Preference' },
+'84'    => { 'name' => 'ARAP-Challenge-Response' },
+'85'    => { 'name' => 'Acct-Interim-Interval' },
+'86'    => { 'name' => 'Acct-Tunnel-Packets-Lost' },
+'87'    => { 'name' => 'NAS-Port-Id' },
+'88'    => { 'name' => 'Framed-Pool' },
+'90'    => { 'name' => 'Tunnel-Client-Auth-ID' },
+'91'    => { 'name' => 'Tunnel-Server-Auth-ID' },
+'95'    => { 'name' => 'NAS-IPv6-Address' },
+'96'    => { 'name' => 'Framed-Interface-Id' },
+'97'    => { 'name' => 'Framed-IPv6-Prefix' },
+'98'    => { 'name' => 'Login-IPv6-Host' },
+'99'    => { 'name' => 'Framed-IPv6-Route' },
+'100'   => { 'name' => 'Framed-IPv6-Pool' },
+'107'   => { 'name' => 'Ascend-Calling-Subaddress' },
+'108'   => { 'name' => 'Ascend-Callback-Delay' },
+'109'   => { 'name' => 'Ascend-Endpoint-Disc' },
+'110'   => { 'name' => 'Ascend-Remote-FW' },
+'111'   => { 'name' => 'Ascend-Multicast-G-Leave-Delay' },
+'112'   => { 'name' => 'Ascend-CBCP-Enable' },
+'113'   => { 'name' => 'Ascend-CBCP-Mode' },
+'114'   => { 'name' => 'Ascend-CBCP-Delay' },
+'115'   => { 'name' => 'Ascend-CBCP-Trunk-Group' },
+'116'   => { 'name' => 'Ascend-Appletalk-Route' },
+'117'   => { 'name' => 'Ascend-Appletalk-Peer-Mode' },
+'118'   => { 'name' => 'Ascend-Route-Appletalk' },
+'119'   => { 'name' => 'Ascend-FCP-Parameter' },
+'120'   => { 'name' => 'Ascend-Modem-Port-No' },
+'121'   => { 'name' => 'Ascend-Modem-Slot-No' },
+'122'   => { 'name' => 'Ascend-Modem-Shelf-No' },
+'123'   => { 'name' => 'Ascend-CallAttempt-Limit' },
+'124'   => { 'name' => 'Ascend-CallBlock-Duration' },
+'125'   => { 'name' => 'Ascend-Maximum-Call-Duration' },
+'126'   => { 'name' => 'Ascend-Route-Preference' },
+'127'   => { 'name' => 'Ascend-Tunneling-Protocol' },
+'128'   => { 'name' => 'Ascend-Shared-Profile-Enable' },
+'129'   => { 'name' => 'Ascend-Primary-Home-Agent' },
+'130'   => { 'name' => 'Ascend-Secondary-Home-Agent' },
+'131'   => { 'name' => 'Ascend-Dialout-Allowed' },
+'132'   => { 'name' => 'Ascend-Client-Gateway' },
+'133'   => { 'name' => 'Ascend-BACP-Enable' },
+'134'   => { 'name' => 'Ascend-DHCP-Maximum-Leases' },
+'135'   => { 'name' => 'Ascend-Client-Primary-DNS' },
+'136'   => { 'name' => 'Ascend-Client-Secondary-DNS' },
+'137'   => { 'name' => 'Ascend-Client-Assign-DNS' },
+'138'   => { 'name' => 'Ascend-User-Acct-Type' },
+'139'   => { 'name' => 'Ascend-User-Acct-Host' },
+'140'   => { 'name' => 'Ascend-User-Acct-Port' },
+'141'   => { 'name' => 'Ascend-User-Acct-Key' },
+'142'   => { 'name' => 'Ascend-User-Acct-Base' },
+'143'   => { 'name' => 'Ascend-User-Acct-Time' },
+'144'   => { 'name' => 'Ascend-Assign-IP-Client' },
+'145'   => { 'name' => 'Ascend-Assign-IP-Server' },
+'146'   => { 'name' => 'Ascend-Assign-IP-Global-Pool' },
+'147'   => { 'name' => 'Ascend-DHCP-Reply' },
+'148'   => { 'name' => 'Ascend-DHCP-Pool-Number' },
+'149'   => { 'name' => 'Ascend-Expect-Callback' },
+'150'   => { 'name' => 'Ascend-Event-Type' },
+'151'   => { 'name' => 'Ascend-Session-Svr-Key' },
+'152'   => { 'name' => 'Ascend-Multicast-Rate-Limit' },
+'153'   => { 'name' => 'Ascend-IF-Netmask' },
+'154'   => { 'name' => 'Ascend-Remote-Addr' },
+'155'   => { 'name' => 'Ascend-Multicast-Client' },
+'156'   => { 'name' => 'Ascend-FR-Circuit-Name' },
+'157'   => { 'name' => 'Ascend-FR-Link-Up' },
+'158'   => { 'name' => 'Ascend-FR-Nailed-Grp' },
+'159'   => { 'name' => 'Ascend-FR-Type' },
+'160'   => { 'name' => 'Ascend-FR-Link-Mgt' },
+'161'   => { 'name' => 'Ascend-FR-N391' },
+'162'   => { 'name' => 'Ascend-FR-DCE-N392' },
+'163'   => { 'name' => 'Ascend-FR-DTE-N392' },
+'164'   => { 'name' => 'Ascend-FR-DCE-N393' },
+'165'   => { 'name' => 'Ascend-FR-DTE-N393' },
+'166'   => { 'name' => 'Ascend-FR-T391' },
+'167'   => { 'name' => 'Ascend-FR-T392' },
+'168'   => { 'name' => 'Ascend-Bridge-Address' },
+'169'   => { 'name' => 'Ascend-TS-Idle-Limit' },
+'170'   => { 'name' => 'Ascend-TS-Idle-Mode' },
+'171'   => { 'name' => 'Ascend-DBA-Monitor' },
+'172'   => { 'name' => 'Ascend-Base-Channel-Count' },
+'173'   => { 'name' => 'Ascend-Minimum-Channels' },
+'174'   => { 'name' => 'Ascend-IPX-Route' },
+'175'   => { 'name' => 'Ascend-FT1-Caller' },
+'176'   => { 'name' => 'Ascend-Backup' },
+'177'   => { 'name' => 'Ascend-Call-Type' },
+'178'   => { 'name' => 'Ascend-Group' },
+'179'   => { 'name' => 'Ascend-FR-DLCI' },
+'180'   => { 'name' => 'Ascend-FR-Profile-Name' },
+'181'   => { 'name' => 'Ascend-Ara-PW' },
+'182'   => { 'name' => 'Ascend-IPX-Node-Addr' },
+'183'   => { 'name' => 'Ascend-Home-Agent-IP-Addr' },
+'184'   => { 'name' => 'Ascend-Home-Agent-Password' },
+'185'   => { 'name' => 'Ascend-Home-Network-Name' },
+'186'   => { 'name' => 'Ascend-Home-Agent-UDP-Port' },
+'187'   => { 'name' => 'Ascend-Multilink-ID' },
+'188'   => { 'name' => 'Ascend-Num-In-Multilink' },
+'189'   => { 'name' => 'Ascend-First-Dest' },
+'190'   => { 'name' => 'Ascend-Pre-Input-Octets' },
+'191'   => { 'name' => 'Ascend-Pre-Output-Octets' },
+'192'   => { 'name' => 'Ascend-Pre-Input-Packets' },
+'193'   => { 'name' => 'Ascend-Pre-Output-Packets' },
+'194'   => { 'name' => 'Ascend-Maximum-Time' },
+'195'   => { 'name' => 'Ascend-Disconnect-Cause' },
+'196'   => { 'name' => 'Ascend-Connect-Progress' },
+'197'   => { 'name' => 'Ascend-Data-Rate' },
+'198'   => { 'name' => 'Ascend-Pre-Session-Time' },
+'199'   => { 'name' => 'Ascend-Token-Idle' },
+'200'   => { 'name' => 'Ascend-Token-Immediate' },
+'201'   => { 'name' => 'Ascend-Require-Auth' },
+'202'   => { 'name' => 'Ascend-Number-Sessions' },
+'203'   => { 'name' => 'Ascend-Authen-Alias' },
+'204'   => { 'name' => 'Ascend-Token-Expiry' },
+'205'   => { 'name' => 'Ascend-Menu-Selector' },
+'206'   => { 'name' => 'Ascend-Menu-Item' },
+'207'   => {
+           'enum' => { '0' => 'Days-Of-Warning' },
+           'name' => 'Ascend-PW-Warntime',
+           },
+'208'   => {
+           'enum' => { '0' => 'Lifetime-In-Days' },
+           'name' => 'Ascend-PW-Lifetime',
+           },
+'209'   => { 'name' => 'Ascend-IP-Direct' },
+'210'   => {
+           'enum' => { '1' => 'VJ-Slot-Comp-No' },
+           'name' => 'Ascend-PPP-VJ-Slot-Comp',
+           },
+'211'   => { 'enum' => { '1' => 'PPP-VJ-1172' }, 'name' => 'Ascend-PPP-VJ-1172' },
+'212'   => { 'name' => 'Ascend-PPP-Async-Map' },
+'213'   => { 'name' => 'Ascend-Third-Prompt' },
+'214'   => { 'name' => 'Ascend-Send-Secret' },
+'215'   => { 'name' => 'Ascend-Receive-Secret' },
+'216'   => {
+           'enum' => { '0' => 'IPX-Peer-Router', '1' => 'IPX-Peer-Dialin' },
+           'name' => 'Ascend-IPX-PeerMode',
+           },
+'217'   => { 'name' => 'Ascend-IP-Pool-Definition' },
+'218'   => { 'name' => 'Ascend-Assign-IP-Pool' },
+'219'   => {
+           'enum' => { '0' => 'FR-Direct-No', '1' => 'FR-Direct-Yes' },
+           'name' => 'Ascend-FR-Direct',
+           },
+'220'   => { 'name' => 'Ascend-FR-Direct-Profile' },
+'221'   => { 'name' => 'Ascend-FR-Direct-DLCI' },
+'222'   => {
+           'enum' => {
+                     '0' => 'Handle-IPX-None',
+                     '1' => 'Handle-IPX-Client',
+                     '2' => 'Handle-IPX-Server',
+                     },
+           'name' => 'Ascend-Handle-IPX',
+           },
+'223'   => { 'name' => 'Ascend-Netware-Timeout' },
+'224'   => { 'name' => 'Ascend-IPX-Alias' },
+'225'   => { 'name' => 'Ascend-Metric' },
+'226'   => {
+           'enum' => {
+                     '0' => 'Unknown-Number',
+                     '1' => 'Intl-Number',
+                     '2' => 'National-Number',
+                     '4' => 'Local-Number',
+                     '5' => 'Abbrev-Number',
+                     },
+           'name' => 'Ascend-PRI-Number-Type',
+           },
+'227'   => { 'name' => 'Ascend-Dial-Number' },
+'228'   => {
+           'enum' => { '0' => 'Route-IP-No', '1' => 'Route-IP-Yes' },
+           'name' => 'Ascend-Route-IP',
+           },
+'229'   => {
+           'enum' => { '0' => 'Route-IPX-No', '1' => 'Route-IPX-Yes' },
+           'name' => 'Ascend-Route-IPX',
+           },
+'230'   => {
+           'enum' => { '0' => 'Bridge-No', '1' => 'Bridge-Yes' },
+           'name' => 'Ascend-Bridge',
+           },
+'231'   => {
+           'enum' => {
+                     '0' => 'Send-Auth-None',
+                     '1' => 'Send-Auth-PAP',
+                     '2' => 'Send-Auth-CHAP',
+                     },
+           'name' => 'Ascend-Send-Auth',
+           },
+'232'   => { 'name' => 'Ascend-Send-Passwd' },
+'233'   => {
+           'enum' => { '0' => 'Link-Comp-None', '1' => 'Link-Comp-Stac' },
+           'name' => 'Ascend-Link-Compression',
+           },
+'234'   => { 'name' => 'Ascend-Target-Util' },
+'235'   => { 'name' => 'Ascend-Maximum-Channels' },
+'236'   => { 'name' => 'Ascend-Inc-Channel-Count' },
+'237'   => { 'name' => 'Ascend-Dec-Channel-Count' },
+'238'   => { 'name' => 'Ascend-Seconds-Of-History' },
+'239'   => {
+           'enum' => {
+                     '0' => 'History-Constant',
+                     '1' => 'History-Linear',
+                     '2' => 'History-Quadratic',
+                     },
+           'name' => 'Ascend-History-Weigh-Type',
+           },
+'240'   => { 'name' => 'Ascend-Add-Seconds' },
+'241'   => { 'name' => 'Ascend-Remove-Seconds' },
+'242'   => { 'name' => 'Ascend-Data-Filter' },
+'243'   => { 'name' => 'Ascend-Call-Filter' },
+'244'   => { 'name' => 'Ascend-Idle-Limit' },
+'245'   => { 'name' => 'Ascend-Preempt-Limit' },
+'246'   => {
+           'enum' => { '0' => 'Callback-No', '1' => 'Callback-Yes' },
+           'name' => 'Ascend-Callback',
+           },
+'247'   => {
+           'enum' => {
+                     '0'  => 'Switched-Voice-Bearer',
+                     '1'  => 'Switched-56KR',
+                     '2'  => 'Switched-64K',
+                     '3'  => 'Switched-64KR',
+                     '4'  => 'Switched-56K',
+                     '5'  => 'Switched-384KR',
+                     '6'  => 'Switched-384K',
+                     '7'  => 'Switched-1536K',
+                     '8'  => 'Switched-1536KR',
+                     '9'  => 'Switched-128K',
+                     '10' => 'Switched-192K',
+                     '11' => 'Switched-256K',
+                     '12' => 'Switched-320K',
+                     '13' => 'Switched-384K-MR',
+                     '14' => 'Switched-448K',
+                     '15' => 'Switched-512K',
+                     '16' => 'Switched-576K',
+                     '17' => 'Switched-640K',
+                     '18' => 'Switched-704K',
+                     '19' => 'Switched-768K',
+                     '20' => 'Switched-832K',
+                     '21' => 'Switched-896K',
+                     '22' => 'Switched-960K',
+                     '23' => 'Switched-1024K',
+                     '24' => 'Switched-1088K',
+                     '25' => 'Switched-1152K',
+                     '26' => 'Switched-1216K',
+                     '27' => 'Switched-1280K',
+                     '28' => 'Switched-1344K',
+                     '29' => 'Switched-1408K',
+                     '30' => 'Switched-1472K',
+                     '31' => 'Switched-1600K',
+                     '32' => 'Switched-1664K',
+                     '33' => 'Switched-1728K',
+                     '34' => 'Switched-1792K',
+                     '35' => 'Switched-1856K',
+                     '36' => 'Switched-1920K',
+                     '37' => 'Switched-inherited',
+                     '38' => 'Switched-restricted-bearer-x30',
+                     '39' => 'Switched-clear-bearer-v110',
+                     '40' => 'Switched-restricted-64-x30',
+                     '41' => 'Switched-clear-56-v110',
+                     '42' => 'Switched-modem',
+                     '43' => 'Switched-atmodem',
+                     },
+           'name' => 'Ascend-Data-Svc',
+           },
+'248'   => {
+           'enum' => { '0' => 'Force-56-No', '1' => 'Force-56-Yes' },
+           'name' => 'Ascend-Force56',
+           },
+'249'   => { 'name' => 'Ascend-Billing-Number' },
+'250'   => { 'name' => 'Ascend-Call-By-Call' },
+'251'   => { 'name' => 'Ascend-Transit-Number' },
+'252'   => { 'name' => 'Ascend-Host-Info' },
+'253'   => { 'name' => 'Ascend-PPP-Address' },
+'254'   => { 'name' => 'Ascend-MPP-Idle-Percent' },
+'255'   => { 'name' => 'Ascend-Xmit-Rate' },
+'4096'  => { 'name' => 'Saved-Radius-Framed-IP-Address' },
+'4097'  => { 'name' => 'Saved-Radius-Callback-Number' },
+'4098'  => { 'name' => 'NP-Calling-Station-ID' },
+'4099'  => { 'name' => 'Saved-NP-Calling-Station-Id' },
+'4100'  => { 'name' => 'Saved-Radius-Framed-Route' },
+'4101'  => { 'name' => 'Ignore-User-Dialin-Properties' },
+'4102'  => { 'name' => 'Day-And-Time-Restrictions' },
+'4103'  => { 'name' => 'NP-Called-Station-ID' },
+'4104'  => {
+           'enum' => {
+                     '0'  => 'Async (Modem)',
+                     '1'  => 'Sync (T1 Line)',
+                     '2'  => 'ISDN Sync',
+                     '3'  => 'ISDN Async V.120',
+                     '4'  => 'ISDN Async V.110',
+                     '5'  => 'Virtual (VPN)',
+                     '6'  => 'PIAFS',
+                     '7'  => 'HDLC Clear Channel',
+                     '8'  => 'X.25',
+                     '9'  => 'X.75',
+                     '10' => 'G.3 Fax',
+                     '11' => 'SDSL - Symmetric DSL',
+                     '12' => 'ADSL-CAP - Asymmetric DSL Carrierless Amplitude Phase Modulation',
+                     '13' => 'ADSL-DMT - Asymmetric DSL Discrete Multi-Tone',
+                     '14' => 'IDSL - ISDN Digital Subscriber Line',
+                     '15' => 'Ethernet',
+                     '16' => 'xDSL - Digital Subscriber Line of unknown type',
+                     '17' => 'Cable',
+                     '18' => 'Wireless - Other',
+                     '19' => 'Wireless - IEEE 802.11',
+                     '20' => 'Token Ring',
+                     '21' => 'FDDI',
+                     },
+           'name' => 'NP-Allowed-Port-Types',
+           },
+'4105'  => { 'name' => 'NP-Authentication-Type' },
+'4106'  => { 'name' => 'NP-Allowed-EAP-Type' },
+'4107'  => { 'name' => 'Shared-Secret' },
+'4108'  => { 'name' => 'Client-IP-Address' },
+'4109'  => { 'name' => 'Client-Packet-Header' },
+'4110'  => { 'name' => 'Token-Groups' },
+'4111'  => { 'name' => 'NP-Allow-Dial-in' },
+'4112'  => { 'name' => 'Request-ID' },
+'4113'  => {
+           'enum' => {
+                     '1'  => 'User-Name',
+                     '30' => 'Called-Station-Id',
+                     '31' => 'Calling-Station-Id',
+                     },
+           'name' => 'Manipulation-Target',
+           },
+'4114'  => { 'name' => 'Manipulation-Rule' },
+'4115'  => { 'name' => 'Original-User-Name' },
+'4116'  => {
+           'enum' => {
+                     '0'    => 'RADIUS Standard',
+                     '1'    => 'Proteon',
+                     '5'    => 'ACC',
+                     '9'    => 'Cisco',
+                     '14'   => 'BBN',
+                     '15'   => 'Xylogics, Inc.',
+                     '43'   => '3Com',
+                     '52'   => 'Cabletron Systems',
+                     '64'   => 'Gandalf',
+                     '117'  => 'Telebit',
+                     '166'  => 'Shiva Corporation',
+                     '181'  => 'ADC Kentrox',
+                     '244'  => 'Lantronix',
+                     '272'  => 'BinTec Communications GmbH',
+                     '307'  => 'Livingston Enterprises, Inc.',
+                     '311'  => 'Microsoft',
+                     '332'  => 'Digi International',
+                     '343'  => 'Intel Corporation',
+                     '429'  => 'U.S. Robotics, Inc.',
+                     '434'  => 'EICON',
+                     '529'  => 'Ascend Communications Inc.',
+                     '562'  => 'Nortel Networks',
+                     '2352' => 'RedBack Networks',
+                     },
+           'name' => 'Client-Vendor',
+           },
+'4117'  => { 'name' => 'Client-UDP-Port' },
+'4118'  => { 'name' => 'MS-CHAP-Challenge' },
+'4119'  => { 'name' => 'MS-CHAP-Response' },
+'4120'  => { 'name' => 'MS-CHAP-Domain' },
+'4121'  => { 'name' => 'MS-CHAP-Error' },
+'4122'  => { 'name' => 'MS-CHAP-CPW-1' },
+'4123'  => { 'name' => 'MS-CHAP-CPW-2' },
+'4124'  => { 'name' => 'MS-CHAP-LM-Enc-PW' },
+'4125'  => { 'name' => 'MS-CHAP-NT-Enc-PW' },
+'4126'  => { 'name' => 'MS-CHAP-MPPE-Keys' },
+'4127'  => {
+           'enum' => {
+                     '1'  => 'PAP',
+                     '2'  => 'CHAP',
+                     '3'  => 'MS-CHAP v1',
+                     '4'  => 'MS-CHAP v2',
+                     '5'  => 'EAP',
+                     '6'  => 'ARAP',
+                     '7'  => 'Unauthenticated',
+                     '8'  => 'Extension',
+                     '9'  => 'MS-CHAP v1 CPW',
+                     '10' => 'MS-CHAP v2 CPW',
+                     },
+           'name' => 'Authentication-Type',
+           },
+'4128'  => { 'name' => 'Client-Friendly-Name' },
+'4129'  => { 'name' => 'SAM-Account-Name' },
+'4130'  => { 'name' => 'Fully-Qualifed-User-Name' },
+'4131'  => { 'name' => 'Windows-Groups' },
+'4132'  => { 'name' => 'EAP-Friendly-Name' },
+'4133'  => {
+           'enum' => { '0' => 'None', '1' => 'Windows', '2' => 'RADIUS Proxy' },
+           'name' => 'Auth-Provider-Type',
+           },
+'4134'  => { 'name' => 'MS-Acct-Auth-Type' },
+'4135'  => { 'name' => 'MS-Acct-EAP-Type' },
+'4136'  => {
+           'enum' => {
+                     '1'   => 'Access-Request',
+                     '2'   => 'Access-Accept',
+                     '3'   => 'Access-Reject',
+                     '4'   => 'Accounting-Request',
+                     '5'   => 'Accounting-Response',
+                     '11'  => 'Access-Challenge',
+                     '12'  => 'Status-Server (experimental)',
+                     '13'  => 'Status-Client (experimental)',
+                     '255' => 'Reserved',
+                     },
+           'name' => 'Packet-Type',
+           },
+'4137'  => { 'name' => 'Auth-Provider-Name' },
+'4138'  => { 'enum' => { '2' => 'RADIUS Proxy' }, 'name' => 'Acct-Provider-Type' },
+'4139'  => { 'name' => 'Acct-Provider-Name' },
+'4140'  => { 'name' => 'MS-MPPE-Send-Key' },
+'4141'  => { 'name' => 'MS-MPPE-Recv-Key' },
+'4142'  => {
+           'enum' => {
+                     '0'  => 'Success',
+                     '1'  => 'Internal error',
+                     '2'  => 'Access denied',
+                     '3'  => 'Malformed request',
+                     '4'  => 'Global catalog unavailable',
+                     '5'  => 'Domain unavailable',
+                     '6'  => 'Server unavailable',
+                     '7'  => 'No such domain',
+                     '8'  => 'No such user',
+                     '9'  => 'The request was discarded by a third-party extension DLL file.',
+                     '10'  => 'A third-party extension DLL has failed and cannot perform its function.',
+                     '112' => 'The remote RADIUS server did not process the authentication request.',
+                     '113' => 'The local NPS proxy attempted to forward a connection request to a member of a remote RADIUS server group that does not exist.',
+                     '115' => 'The local NPS proxy did not forward a RADIUS message because it is not an accounting request or a connection request.',
+                     '116' => 'The local NPS proxy server cannot forward the connection request to the remote RADIUS server because either the proxy cannot open a Windows socket over which to send the connection request, or the proxy server attempted to send the connection request but received Windows sockets errors that prevented successful completion of the send operation.',
+                     '117' => 'The remote RADIUS (Remote Authentication Dial-In User Service) server did not respond.',
+                     '118' => 'The local NPS proxy server received a RADIUS message that is malformed from a remote RADIUS server, and the message is unreadable.',
+                     '16'  => 'Authentication failure',
+                     '17'  => 'Password change failure',
+                     '18'  => 'Unsupported authentication type',
+                     '19'  => 'No reversibly encrypted password is stored for the user account',
+                     '20'  => 'Lan Manager Authentication is not enabled.',
+                     '21'  => 'An IAS extension dynamic link library (DLL) that is installed on the NPS server rejected the connection request.',
+                     '22'  => 'The client could not be authenticated because the EAP type cannot be processed by the server.',
+                     '23'  => 'Unexpected error. Possible error in server or client configuration.',
+                     '256' => 'The certificate provided by the user or computer as proof of their identity is a revoked certificate. Because of this, the user or computer was not authenticated, and NPS rejected the connection request.',
+                     '257' => 'Due to a missing dynamic link library (DLL) or exported function, NPS cannot access the certificate revocation list to verify whether the user or client computer certificate is valid or is revoked.',
+                     '258' => 'The revocation function was unable to check revocation for the certificate.',
+                     '259' => 'The certification authority that manages the certificate revocation list is not available. NPS cannot verify whether the certificate is valid or is revoked. Because of this, authentication failed.',
+                     '260' => 'The message supplied for verification has been altered.',
+                     '261' => 'NPS cannot contact Active Directory Domain Services (AD DS) or the local user accounts database to perform authentication and authorization. The connection request is denied for this reason.',
+                     '262' => 'The supplied message is incomplete.  The signature was not verified.',
+                     '263' => 'NPS did not receive complete credentials from the user or computer. The connection request is denied for this reason.',
+                     '264' => 'The Security Support Provider Interface (SSPI) called by EAP reports that the system clocks on the NPS server and the access client are not synchronized.',
+                     '265' => 'The certificate that the user or client computer provided to NPS as proof of identity chains to an enterprise root certification authority that is not trusted by the NPS server.',
+                     '266' => 'The message received was unexpected or badly formatted.',
+                     '267' => 'The certificate provided by the connecting user or computer is not valid because it is not configured with the Client Authentication purpose in Application Policies or Enhanced Key Usage (EKU) extensions. NPS rejected the connection request for this reason.',
+                     '268' => 'The certificate provided by the connecting user or computer is expired. NPS rejected the connection request for this reason.',
+                     '269' => 'The Security Support Provider Interface (SSPI) called by EAP reports that the NPS server and the access client cannot communicate because they do not possess a common algorithm.',
+                     '270' => 'Based on the matching NPS network policy, the user is required to log on with a smart card, but they have attempted to log on by using other credentials. NPS rejected the connection request for this reason.',
+                     '271' => 'The connection request was not processed because the NPS server was in the process of shutting down or restarting when it received the request.',
+                     '272' => 'The certificate that the user or client computer provided to NPS as proof of identity maps to multiple user or computer accounts rather than one account. NPS rejected the connection request for this reason.',
+                     '273' => 'Authentication failed. NPS called Windows Trust Verification Services, and the trust provider is not recognized on this computer. A trust provider is a software module that implements the algorithm for application-specific policies regarding trust.',
+                     '274' => 'Authentication failed. NPS called Windows Trust Verification Services, and the trust provider does not support the specified action. Each trust provider provides its own unique set of action identifiers. For information about the action identifiers supported by a trust provider, see the documentation for that trust provider.',
+                     '275' => 'Authentication failed. NPS called Windows Trust Verification Services, and the trust provider does not support the specified form. A trust provider is a software module that implements the algorithm for application-specific policies regarding trust. Trust providers support subject forms that describe where the trust information is located and what trust actions to take regarding the subject.',
+                     '276' => 'Authentication failed. NPS called Windows Trust Verification Services, but the binary file that calls EAP cannot be verified and is not trusted.',
+                     '277' => 'Authentication failed. NPS called Windows Trust Verification Services, but the binary file that calls EAP is not signed, or the signer certificate cannot be found.',
+                     '278' => 'Authentication failed. The certificate that was provided by the connecting user or computer is expired.',
+                     '279' => 'Authentication failed. The certificate is not valid because the validity periods of certificates in the chain do not match. For example, the following End Certificate and Issuer Certificate validity periods do not match: End Certificate validity period: 2007-2010; Issuer Certificate validity period: 2006-2008.',
+                     '280' => 'Authentication failed. The certificate is not valid and was not issued by a valid certification authority (CA).',
+                     '281' => 'Authentication failed. The path length constraint in the certification chain has been exceeded. This constraint restricts the maximum number of CA certificates that can follow this certificate in the certificate chain.',
+                     '282' => 'Authentication failed. The certificate contains a critical extension that is unrecognized by NPS.',
+                     '283' => 'Authentication failed. The certificate does not contain the Client Authentication purpose in Application Policies extensions, and cannot be used for authentication.',
+                     '284' => 'Authentication failed. The certificate is not valid because the certificate issuer and the parent of the certificate in the certificate chain are required to match but do not match.',
+                     '285' => 'Authentication failed. NPS cannot locate the certificate, or the certificate is incorrectly formed and is missing important information.',
+                     '286' => 'Authentication failed. The certificate provided by the connecting user or computer is issued by a certification authority (CA) that is not trusted by the NPS server.',
+                     '287' => 'Authentication failed. The certificate provided by the connecting user or computer does not chain to an enterprise root CA that NPS trusts.',
+                     '288' => 'Authentication failed due to an unspecified trust failure.',
+                     '289' => 'Authentication failed. The certificate provided by the connecting user or computer is revoked and is not valid.',
+                     '290' => 'Authentication failed. A test or trial certificate is in use, however the test root CA is not trusted, according to local or domain policy settings.',
+                     '291' => 'Authentication failed because NPS cannot locate and access the certificate revocation list to verify whether the certificate has or has not been revoked. This issue can occur if the revocation server is not available or if the certificate revocation list cannot be located in the revocation server database.',
+                     '292' => 'Authentication failed. The value of the User-Name attribute in the connection request does not match the value of the common name (CN) property in the certificate.',
+                     '293' => 'Authentication failed. The certificate provided by the connecting user or computer is not valid because it is not configured with the Client Authentication purpose in Application Policies or Enhanced Key Usage (EKU) extensions. NPS rejected the connection request for this reason.',
+                     '294' => 'Authentication failed because the certificate was explicitly marked as untrusted by the Administrator. Certificates are designated as untrusted when they are imported into the Untrusted Certificates folder in the certificate store for the Current User or Local Computer in the Certificates Microsoft Management Console (MMC) snap-in.',
+                     '295' => 'Authentication failed. The certificate provided by the connecting user or computer is issued by a CA that is not trusted by the NPS server.',
+                     '296' => 'Authentication failed. The certificate provided by the connecting user or computer is not valid because it is not configured with the Client Authentication purpose in Application Policies or Enhanced Key Usage (EKU) extensions. NPS rejected the connection request for this reason.',
+                     '297' => 'Authentication failed. The certificate provided by the connecting user or computer is not valid because it does not have a valid name.',
+                     '298' => 'Authentication failed. Either the certificate does not contain a valid user principal name (UPN) or the value of the User-Name attribute in the connection request does not match the certificate.',
+                     '299' => 'Authentication failed. The sequence of information provided by internal components or protocols during message verification is incorrect.',
+                     '300' => 'Authentication failed. The certificate is malformed and Extensible Authentication Protocl (EAP) cannot locate credential information in the certificate.',
+                     '301' => q{NPS terminated the authentication process. NPS received a cryptobinding type length value (TLV) from the access client that is not valid. This issue occurs when an attempt to breach your network security has occurred and a man-in-the-middle (MITM) attack is in progress. During MITM attacks on your network, attackers use unauthorized computers to intercept traffic between your legitimate hosts while posing as one of the legitimate hosts. The attacker's computer attempts to gain data from your other network resources. This enables the attacker to use the unauthorized computer to intercept, decrypt, and access all network traffic that would otherwise go to one of your legitimate network resources.},
+                     '302' => 'NPS terminated the authentication process. NPS did not receive a required cryptobinding type length value (TLV) from the access client during the authentication process.',
+                     '32'  => 'Local users only',
+                     '33'  => 'Password must be changed',
+                     '34'  => 'Account disabled',
+                     '35'  => 'Account expired',
+                     '36'  => 'Account locked out',
+                     '37'  => 'Invalid logon hours',
+                     '38'  => 'Account restriction',
+                     '48'  => 'Did not match remote access policy',
+                     '49'  => 'Did not match connection request policy',
+                     '64'  => 'Dial-in locked out',
+                     '65'  => 'Dial-in disabled',
+                     '66'  => 'Invalid authentication type',
+                     '67'  => 'Invalid calling station',
+                     '68'  => 'Invalid dial-in hours',
+                     '69'  => 'Invalid called station',
+                     '70'  => 'Invalid port type',
+                     '71'  => 'Invalid restriction',
+                     '72'  => 'The user cannot change his or her password because the change password option is not enabled for the matching remote access policy',
+                     '73'  => 'The Enhanced Key Usage (EKU) extensions, section of the user or computer certificate are not valid or are missing.',
+                     '80'  => 'No record',
+                     '96'  => 'Session timed out',
+                     '97'  => 'Unexpected request',
+                     },
+           'name' => 'Reason-Code',
+           },
+'4143'  => { 'name' => 'MS-Filter' },
+'4144'  => { 'name' => 'MS-CHAP2-Response' },
+'4145'  => { 'name' => 'MS-CHAP2-Success' },
+'4146'  => { 'name' => 'MS-CHAP2-CPW' },
+'4147'  => {
+           'enum' => {
+                     '0'    => 'RADIUS Standard',
+                     '1'    => 'Proteon',
+                     '5'    => 'ACC',
+                     '9'    => 'Cisco',
+                     '14'   => 'BBN',
+                     '15'   => 'Xylogics, Inc.',
+                     '43'   => '3Com',
+                     '52'   => 'Cabletron Systems',
+                     '64'   => 'Gandalf',
+                     '117'  => 'Telebit',
+                     '166'  => 'Shiva Corporation',
+                     '181'  => 'ADC Kentrox',
+                     '244'  => 'Lantronix',
+                     '272'  => 'BinTec Communications GmbH',
+                     '307'  => 'Livingston Enterprises, Inc.',
+                     '311'  => 'Microsoft',
+                     '332'  => 'Digi International',
+                     '343'  => 'Intel Corporation',
+                     '429'  => 'U.S. Robotics, Inc.',
+                     '434'  => 'EICON',
+                     '529'  => 'Ascend Communications Inc.',
+                     '562'  => 'Nortel Networks',
+                     '2352' => 'RedBack Networks',
+                     },
+           'name' => 'MS-RAS-Vendor',
+           },
+'4148'  => { 'name' => 'MS-RAS-Version' },
+'4149'  => { 'name' => 'NP-Policy-Name' },
+'4150'  => { 'name' => 'MS-Primary-DNS-Server' },
+'4151'  => { 'name' => 'MS-Secondary-DNS-Server' },
+'4152'  => { 'name' => 'MS-Primary-NBNS-Server' },
+'4153'  => { 'name' => 'MS-Secondary-NBNS-Server' },
+'4154'  => { 'name' => 'Proxy-Policy-Name' },
+'4155'  => {
+           'enum' => { '0' => 'None', '1' => 'Windows', '2' => 'RADIUS Proxy' },
+           'name' => 'Provider-Type',
+           },
+'4156'  => { 'name' => 'Provider-Name' },
+'4157'  => { 'name' => 'Remote-Server-Address' },
+'4158'  => { 'name' => 'Generate-Class-Attribute' },
+'4159'  => { 'name' => 'MS-RAS-Client-Name' },
+'4160'  => { 'name' => 'MS-RAS-Client-Version' },
+'4161'  => { 'name' => 'Allowed-Certificate-OID' },
+'4162'  => { 'name' => 'Extension-State' },
+'4163'  => { 'name' => 'Generate-Session-Timeout' },
+'4164'  => { 'name' => 'MS-Session-Timeout' },
+'4165'  => { 'name' => 'MS-Quarantine-IPFilter' },
+'4166'  => { 'name' => 'MS-Quarantine-Session-Timeout' },
+'4167'  => { 'name' => 'MS-User-Security-Identity' },
+'4168'  => { 'name' => 'Remote-RADIUS-to-Windows-User-Mapping' },
+'4169'  => { 'name' => 'Passport-User-Mapping-UPN-Suffix' },
+'4170'  => { 'name' => 'Tunnel-Tag' },
+'4171'  => { 'name' => 'NP-PEAPUpfront-Enabled' },
+'5000'  => { 'name' => 'Cisco-AV-Pair' },
+'6000'  => {
+           'enum' => {
+                     '0' => 'Standard',
+                     '1' => 'Custom',
+                     '2' => 'Bronze',
+                     '3' => 'Silver',
+                     '4' => 'Gold',
+                     '5' => 'Platinum',
+                     '6' => 'Premium',
+                     '7' => 'Critical Network',
+                     },
+           'name' => 'Nortel-Port-QOS',
+           },
+'6001'  => { 'name' => 'Nortel-Port-Priority' },
+'8096'  => { 'name' => 'ARAP-Guest-Logon' },
+'8097'  => { 'name' => 'Certificate-EKU' },
+'8098'  => { 'name' => 'EAP-Configuration' },
+'8099'  => { 'name' => 'MS-PEAP-Embedded-EAP-TypeId' },
+'8100'  => { 'name' => 'MS-PEAP-Fast-Roamed-Session' },
+'8101'  => { 'name' => 'IAS-EAP-TypeId' },
+'8102'  => { 'name' => 'MS-EAP-TLV' },
+'8103'  => { 'name' => 'Reject-Reason-Code' },
+'8104'  => { 'name' => 'Proxy-EAP-Configuration' },
+'8105'  => { 'name' => 'Session' },
+'8106'  => { 'name' => 'Is-Replay' },
+'8107'  => { 'name' => 'Clear-Text-Password' },
+'8108'  => {
+           'enum' => { '1' => 'Machine health check' },
+           'name' => 'MS-Identity-Type',
+           },
+'8109'  => { 'name' => 'MS-Service-Class' },
+'8110'  => { 'name' => 'MS-Quarantine-User-Class' },
+'8111'  => {
+           'enum' => { '0' => 'Full Access', '1' => 'Quarantine', '2' => 'Probation' },
+           'name' => 'MS-Quarantine-State',
+           },
+'8112'  => { 'name' => 'Override-RAP-Auth' },
+'8116'  => { 'name' => 'Windows-Machine-Groups' },
+'8117'  => { 'name' => 'Windows-User-Groups' },
+'8120'  => { 'name' => 'MS-Quarantine-Grace-Time' },
+'8121'  => { 'name' => 'Quarantine-URL' },
+'8123'  => { 'name' => 'Not-Quarantine-Capable' },
+'8124'  => { 'name' => 'System-Health-Result' },
+'8125'  => { 'name' => 'System-Health-Validators' },
+'8129'  => { 'name' => 'Fully-Qualified-Machine-Name' },
+'8130'  => { 'name' => 'Quarantine-Fixup-Servers-Configuration' },
+'8132'  => {
+           'enum' => {
+                     '0' => 'Unspecified',
+                     '1' => 'Terminal Server Gateway',
+                     '2' => 'Remote Access Server (VPN-Dial up)',
+                     '3' => 'DHCP Server',
+                     '5' => 'Health Registration Authority',
+                     '6' => 'HCAP Server',
+                     },
+           'name' => 'MS-Network-Access-Server-Type',
+           },
+'8133'  => { 'name' => 'Quarantine-Session-Id' },
+'8134'  => {
+           'enum' => { '1' => 'Boundary', '2' => 'Non Boundary' },
+           'name' => 'MS-AFW-Zone',
+           },
+'8135'  => {
+           'enum' => { '1' => 'Signed', '2' => 'Encrypted' },
+           'name' => 'MS-AFW-Protection-Level',
+           },
+'8136'  => { 'name' => 'Quarantine-Update-Non-Compliant' },
+'8138'  => { 'name' => 'MS-Machine-Name' },
+'8139'  => { 'name' => 'Client-IPv6-Address' },
+'8140'  => { 'name' => 'Saved-Radius-Framed-Interface-Id' },
+'8141'  => { 'name' => 'Saved-Radius-Framed-IPv6-Prefix' },
+'8142'  => { 'name' => 'Saved-Radius-Framed-IPv6-Route' },
+'8143'  => { 'name' => 'Quarantine-Grace-Time-Configuration' },
+'8144'  => { 'name' => 'MS-IPv6-Filter' },
+'8145'  => { 'name' => 'MS-IPv4-Remediation-Servers' },
+'8146'  => { 'name' => 'MS-IPv6-Remediation-Servers' },
+'8148'  => { 'name' => 'Machine-Inventory' },
+'8149'  => { 'name' => 'Absolute-Time' },
+'8150'  => { 'name' => 'MS-Quarantine-SoH' },
+'8151'  => { 'name' => 'EAP-Types-Configured-In-ProxyPolicy' },
+'8152'  => { 'name' => 'HCAP-Location-Group-Name' },
+'8153'  => {
+           'enum' => { '0' => 'No Data', '1' => 'Transition', '2' => 'Infected', '3' => 'Unknown' },
+           'name' => 'MS-Extended-Quarantine-State',
+           },
+'8155'  => { 'name' => 'HCAP-User-Groups' },
+'8156'  => { 'name' => 'Saved-Machine-HealthCheck-Only' },
+'8158'  => { 'name' => 'MS-RAS-Correlation-ID' },
+'8159'  => { 'name' => 'HCAP-User-Name' },
+'8160'  => { 'name' => 'SAM-HCAP-Account-Name' },
+'8164'  => { 'name' => 'User-IPv4-Address' },
+'8165'  => { 'name' => 'User-IPv6-Address' },
+'8166'  => { 'name' => 'TSG-Device-Redirection' },
+'11000' => { 'name' => 'USR-Last-Number-Dialed-Out' },
+'11001' => { 'name' => 'USR-Last-Number-Dialed-In-DNIS' },
+'11002' => { 'name' => 'USR-Last-Callers-Number-ANI' },
+'11003' => { 'name' => 'USR-Channel' },
+'11004' => {
+           'enum' => {
+                     '6'   => 'Module-Inserted',
+                     '7'   => 'Module-Removed',
+                     '8'   => 'PSU-Voltage-Alarm',
+                     '9'   => 'PSU-Failed',
+                     '10'  => 'HUB-Temp-Out-of-Range',
+                     '11'  => 'Fan-Failed',
+                     '12'  => 'Watchdog-Timeout',
+                     '13'  => 'Mgmt-Bus-Failure',
+                     '14'  => 'In-Connection-Est',
+                     '15'  => 'Out-Connection-Est',
+                     '16'  => 'In-Connection-Term',
+                     '17'  => 'Out-Connection-Term',
+                     '18'  => 'Connection-Failed',
+                     '19'  => 'Connection-Timeout',
+                     '20'  => 'DTE-Transmit-Idle',
+                     '21'  => 'DTR-True',
+                     '22'  => 'DTR-False',
+                     '23'  => 'Block-Error-at-Threshold',
+                     '24'  => 'Fallbacks-at-Threshold',
+                     '25'  => 'No-Dial-Tone-Detected',
+                     '26'  => 'No-Loop-Current-Detected',
+                     '27'  => 'Yellow-Alarm',
+                     '28'  => 'Red-Alarm',
+                     '29'  => 'Loss-Of-Signal',
+                     '30'  => 'Rcv-Alrm-Ind-Signal',
+                     '31'  => 'Timing-Source-Switch',
+                     '32'  => 'Modem-Reset-by-DTE',
+                     '33'  => 'Modem-Ring-No-Answer',
+                     '34'  => 'DTE-Ring-No-Answer',
+                     '35'  => 'Pkt-Bus-Session-Active',
+                     '36'  => 'Pkt-Bus-Session-Congestion',
+                     '37'  => 'Pkt-Bus-Session-Lost',
+                     '38'  => 'Pkt-Bus-Session-Inactive',
+                     '39'  => 'User-Interface-Reset',
+                     '40'  => 'Gateway-Port-Out-of-Service',
+                     '41'  => 'Gateway-Port-Link-Active',
+                     '42'  => 'Dial-Out-Login-Failure',
+                     '43'  => 'Dial-In-Login-Failure',
+                     '44'  => 'Dial-Out-Restricted-Number',
+                     '45'  => 'Dial-Back-Restricted-Number',
+                     '46'  => 'User-Blacklisted',
+                     '47'  => 'Attempted-Login-Blacklisted',
+                     '48'  => 'Response-Attempt-Limit-Exceeded',
+                     '49'  => 'Login-Attempt-Limit-Exceeded',
+                     '50'  => 'Dial-Out-Call-Duration',
+                     '51'  => 'Dial-In-Call-Duration',
+                     '52'  => 'Pkt-Bus-Session-Err-Status',
+                     '53'  => 'NMC-AutoRespnse-Trap',
+                     '54'  => 'Acct-Server-Contact-Loss',
+                     '55'  => 'Yellow-Alarm-Clear',
+                     '56'  => 'Red-Alarm-Clear',
+                     '57'  => 'Loss-Of-Signal-Clear',
+                     '58'  => 'Rcv-Alrm-Ind-Signal-Clear',
+                     '59'  => 'Incoming-Connection-Established',
+                     '60'  => 'Outgoing-Connection-Established',
+                     '61'  => 'Incoming-Connection-Terminated',
+                     '62'  => 'Outgoing-Connection-Terminated',
+                     '63'  => 'Connection-Attempt-Failure',
+                     '64'  => 'Continuous-CRC-Alarm',
+                     '65'  => 'Continuous-CRC-Alarm-Clear',
+                     '66'  => 'Physical-State-Change',
+                     '71'  => 'Gateway-Network-Failed',
+                     '72'  => 'Gateway-Network-Restored',
+                     '73'  => 'Packet-Bus-Clock-Lost',
+                     '74'  => 'Packet-Bus-Clock-Restored',
+                     '75'  => 'D-Channel-In-Service',
+                     '76'  => 'D-Channel-Out-of-Service',
+                     '77'  => 'DS0s-In-Service',
+                     '78'  => 'DS0s-Out-of-Service',
+                     '79'  => 'T1/T1PRI/E1PRI-Call-Event',
+                     '80'  => 'Psu-Incompatible',
+                     '81'  => 'T1 T1-E1/PRI-Call-Arrive-Event',
+                     '82'  => 'T1 T1-E1/PRI-Call-Connect-Event',
+                     '83'  => 'T1 T1-E1/PRI-Call-Termina-Event',
+                     '84'  => 'T1 T1-E1/PRI-Call-Failed-Event',
+                     '85'  => 'DNS-Contact-Lost',
+                     '86'  => 'NTP-Contact-Lost',
+                     '87'  => 'NTP-Contact-Restored',
+                     '88'  => 'IPGW-Link-Up',
+                     '89'  => 'IPGW-Link-Down',
+                     '90'  => 'NTP-Contact-Degraded',
+                     '91'  => 'In-Connection-Failed',
+                     '92'  => 'Out-Connection-Failed',
+                     '93'  => 'Application-ProcessorReset',
+                     '94'  => 'DSP-Reset',
+                     '95'  => 'Changed-to-Maint-Srvs-State',
+                     '96'  => 'Loop-Back-cleared-on-channel',
+                     '97'  => 'Loop-Back-on-channel',
+                     '98'  => 'Telco-Abnormal-Response',
+                     '99'  => 'DNS-Contact-Restored',
+                     '100' => 'DNS-Contact-Degraded',
+                     '101' => 'RADIUS-Accounting-Restored',
+                     '102' => 'RADIUS-Accounting-Group-Restore',
+                     '103' => 'RADIUS-Accounting-Group-Degrade',
+                     '104' => 'RADIUS-Accounting-Group-NonOper',
+                     '119' => 'T1/T1-E1/PRI-InCall-Fail-Event',
+                     '120' => 'T1/T1-E1/PRI-OutCall-Fail-Event',
+                     '121' => 'RMMIE-Retrain-Event',
+                     '122' => 'RMMIE-Speed-Shift-Event',
+                     '191' => 'CDMA-Call-Start',
+                     '192' => 'CDMA-Call-End',
+                     },
+           'name' => 'USR-Event-Id',
+           },
+'11005' => { 'name' => 'USR-Event-Date-Time' },
+'11006' => { 'name' => 'USR-Call-Start-Date-Time' },
+'11007' => { 'name' => 'USR-Call-End-Date-Time' },
+'11008' => {
+           'enum' => {
+                     '1'  => '110-BPS',
+                     '2'  => '300-BPS',
+                     '3'  => '600-BPS',
+                     '4'  => '1200-BPS',
+                     '5'  => '2400-BPS',
+                     '6'  => '4800-BPS',
+                     '7'  => '7200-BPS',
+                     '8'  => '9600-BPS',
+                     '9'  => '12K-BPS',
+                     '10' => '14.4K-BPS',
+                     '11' => '16.8-BPS',
+                     '12' => '19.2K-BPS',
+                     '13' => '38.4K-BPS',
+                     '14' => '75-BPS',
+                     '15' => '450-BPS',
+                     '16' => 'UNKNOWN-BPS',
+                     '17' => '57.6K-BPS',
+                     '18' => '21.6K-BPS',
+                     '19' => '24K-BPS',
+                     '20' => '26K-BPS',
+                     '21' => '28K-BPS',
+                     '22' => '115K-BPS',
+                     },
+           'name' => 'USR-Default-DTE-Data-Rate',
+           },
+'11009' => {
+           'enum' => {
+                     '1'  => '110-BPS',
+                     '2'  => '300-BPS',
+                     '3'  => '600-BPS',
+                     '4'  => '1200-BPS',
+                     '5'  => '2400-XBPS',
+                     '6'  => '4800-BPS',
+                     '7'  => '7200-BPS',
+                     '8'  => '9600-BPS',
+                     '9'  => '12K-BPS',
+                     '10' => '14.4K-BPS',
+                     '11' => '16.8-BPS',
+                     '12' => '19.2K-BPS',
+                     '13' => '38.4K-BPS',
+                     '14' => '75-BPS',
+                     '15' => '450-BPS',
+                     '16' => 'UNKNOWN-BPS',
+                     '17' => '57.6K-BPS',
+                     '18' => '21.6K-BPS',
+                     '19' => '24K-BPS',
+                     '20' => '26K-BPS',
+                     '21' => '28K-BPS',
+                     '22' => '115K-BPS',
+                     '23' => '31K-BPS',
+                     '24' => '33K-BPS',
+                     '25' => '25333-BPS',
+                     '26' => '26666-BPS',
+                     '27' => '28000-BPS',
+                     '28' => '29333-BPS',
+                     '29' => '30666-BPS',
+                     '30' => '32000-BPS',
+                     '31' => '33333-BPS',
+                     '32' => '34666-BPS',
+                     '33' => '36000-BPS',
+                     '34' => '37333-BPS',
+                     '35' => '38666-BPS',
+                     '36' => '40000-BPS',
+                     '37' => '41333-BPS',
+                     '38' => '42666-BPS',
+                     '39' => '44000-BPS',
+                     '40' => '45333-BPS',
+                     '41' => '46666-BPS',
+                     '42' => '48000-BPS',
+                     '43' => '49333-BPS',
+                     '44' => '50666-BPS',
+                     '45' => '52000-BPS',
+                     '46' => '53333-BPS',
+                     '47' => '54666-BPS',
+                     '48' => '56000-BPS',
+                     '49' => '57333-BPS',
+                     '50' => '58666-BPS',
+                     '51' => '60000-BPS',
+                     '52' => '61333-BPS',
+                     '53' => '62666-BPS',
+                     '54' => '64000-BPS',
+                     },
+           'name' => 'USR-Initial-Rx-Link-Data-Rate',
+           },
+'11010' => {
+           'enum' => {
+                     '1'  => '110-BPS',
+                     '2'  => '300-BPS',
+                     '3'  => '600-BPS',
+                     '4'  => '1200-BPS',
+                     '5'  => '2400-BPS',
+                     '6'  => '4800-BPS',
+                     '7'  => '7200-BPS',
+                     '8'  => '9600-BPS',
+                     '9'  => '12K-BPS',
+                     '10' => '14.4K-BPS',
+                     '11' => '16.8-BPS',
+                     '12' => '19.2K-BPS',
+                     '13' => '38.4K-BPS',
+                     '14' => '75-BPS',
+                     '15' => '450-BPS',
+                     '16' => 'UNKNOWN-BPS',
+                     '17' => '57.6K-BPS',
+                     '18' => '21.6K-BPS',
+                     '19' => '24K-BPS',
+                     '20' => '26K-BPS',
+                     '21' => '28K-BPS',
+                     '22' => '115K-BPS',
+                     '23' => '31K-BPS',
+                     '24' => '33K-BPS',
+                     '25' => '25333-BPS',
+                     '26' => '26666-BPS',
+                     '27' => '28000-BPS',
+                     '28' => '29333-BPS',
+                     '29' => '30666-BPS',
+                     '30' => '32000-BPS',
+                     '31' => '33333-BPS',
+                     '32' => '34666-BPS',
+                     '33' => '36000-BPS',
+                     '34' => '37333-BPS',
+                     '35' => '38666-BPS',
+                     '36' => '40000-BPS',
+                     '37' => '41333-BPS',
+                     '38' => '42666-BPS',
+                     '39' => '44000-BPS',
+                     '40' => '45333-BPS',
+                     '41' => '46666-BPS',
+                     '42' => '48000-BPS',
+                     '43' => '49333-BPS',
+                     '44' => '50666-BPS',
+                     '45' => '52000-BPS',
+                     '46' => '53333-BPS',
+                     '47' => '54666-BPS',
+                     '48' => '56000-BPS',
+                     '49' => '57333-BPS',
+                     '50' => '58666-BPS',
+                     '51' => '60000-BPS',
+                     '52' => '61333-BPS',
+                     '53' => '62666-BPS',
+                     '54' => '64000-BPS',
+                     },
+           'name' => 'USR-Final-Rx-Link-Data-Rate',
+           },
+'11011' => {
+           'enum' => {
+                     '1'  => '110-BPS',
+                     '2'  => '300-BPS',
+                     '3'  => '600-BPS',
+                     '4'  => '1200-BPS',
+                     '5'  => '2400-BPS',
+                     '6'  => '4800-BPS',
+                     '7'  => '7200-BPS',
+                     '8'  => '9600-BPS',
+                     '9'  => '12K-BPS',
+                     '10' => '14.4K-BPS',
+                     '11' => '16.8-BPS',
+                     '12' => '19.2K-BPS',
+                     '13' => '38.4K-BPS',
+                     '14' => '75-BPS',
+                     '15' => '450-BPS',
+                     '16' => 'UNKNOWN-BPS',
+                     '17' => '57.6K-BPS',
+                     '18' => '21.6K-BPS',
+                     '19' => '24K-BPS',
+                     '20' => '26K-BPS',
+                     '21' => '28K-BPS',
+                     '22' => '115K-BPS',
+                     '23' => '31K-BPS',
+                     '24' => '33K-BPS',
+                     '25' => '25333-BPS',
+                     '26' => '26666-BPS',
+                     '27' => '28000-BPS',
+                     '28' => '29333-BPS',
+                     '29' => '30666-BPS',
+                     '30' => '32000-BPS',
+                     '31' => '33333-BPS',
+                     '32' => '34666-BPS',
+                     '33' => '36000-BPS',
+                     '34' => '37333-BPS',
+                     '35' => '38666-BPS',
+                     '36' => '40000-BPS',
+                     '37' => '41333-BPS',
+                     '38' => '42666-BPS',
+                     '39' => '44000-BPS',
+                     '40' => '45333-BPS',
+                     '41' => '46666-BPS',
+                     '42' => '48000-BPS',
+                     '43' => '49333-BPS',
+                     '44' => '50666-BPS',
+                     '45' => '52000-BPS',
+                     '46' => '53333-BPS',
+                     '47' => '54666-BPS',
+                     '48' => '56000-BPS',
+                     '49' => '57333-BPS',
+                     '50' => '58666-BPS',
+                     '51' => '60000-BPS',
+                     '52' => '61333-BPS',
+                     '53' => '62666-BPS',
+                     '54' => '64000-BPS',
+                     },
+           'name' => 'USR-Initial-Tx-Link-Data-Rate',
+           },
+'11012' => {
+           'enum' => {
+                     '1'  => '110-BPS',
+                     '2'  => '300-BPS',
+                     '3'  => '600-BPS',
+                     '4'  => '1200-BPS',
+                     '5'  => '2400-BPS',
+                     '6'  => '4800-BPS',
+                     '7'  => '7200-BPS',
+                     '8'  => '9600-BPS',
+                     '9'  => '12K-BPS',
+                     '10' => '14.4K-BPS',
+                     '11' => '16.8-BPS',
+                     '12' => '19.2K-BPS',
+                     '13' => '38.4K-BPS',
+                     '14' => '75-BPS',
+                     '15' => '450-BPS',
+                     '16' => 'UNKNOWN-BPS',
+                     '17' => '57.6K-BPS',
+                     '18' => '21.6K-BPS',
+                     '19' => '24K-BPS',
+                     '20' => '26K-BPS',
+                     '21' => '28K-BPS',
+                     '22' => '115K-BPS',
+                     '23' => '31K-BPS',
+                     '24' => '33K-BPS',
+                     '25' => '25333-BPS',
+                     '26' => '26666-BPS',
+                     '27' => '28000-BPS',
+                     '28' => '29333-BPS',
+                     '29' => '30666-BPS',
+                     '30' => '32000-BPS',
+                     '31' => '33333-BPS',
+                     '32' => '34666-BPS',
+                     '33' => '36000-BPS',
+                     '34' => '37333-BPS',
+                     '35' => '38666-BPS',
+                     '36' => '40000-BPS',
+                     '37' => '41333-BPS',
+                     '38' => '42666-BPS',
+                     '39' => '44000-BPS',
+                     '40' => '45333-BPS',
+                     '41' => '46666-BPS',
+                     '42' => '48000-BPS',
+                     '43' => '49333-BPS',
+                     '44' => '50666-BPS',
+                     '45' => '52000-BPS',
+                     '46' => '53333-BPS',
+                     '47' => '54666-BPS',
+                     '48' => '56000-BPS',
+                     '49' => '57333-BPS',
+                     '50' => '58666-BPS',
+                     '51' => '60000-BPS',
+                     '52' => '61333-BPS',
+                     '53' => '62666-BPS',
+                     '54' => '64000-BPS',
+                     },
+           'name' => 'USR-Final-Tx-Link-Data-Rate',
+           },
+'11013' => { 'name' => 'USR-Chassis-Temperature' },
+'11014' => { 'name' => 'USR-Chassis-Temp-Threshold' },
+'11015' => { 'name' => 'USR-Actual-Voltage' },
+'11016' => { 'name' => 'USR-Expected-Voltage' },
+'11017' => { 'name' => 'USR-Power-Supply-Number' },
+'11018' => {
+           'enum' => {
+                     '1'    => 'SlotEmpty',
+                     '2'    => 'SlotUnknown',
+                     '3'    => 'NetwMgtCard',
+                     '4'    => 'DualT1NAC',
+                     '5'    => 'DualModemNAC',
+                     '6'    => 'QuadModemNAC',
+                     '7'    => 'TrGatewayNAC',
+                     '8'    => 'X25GatewayNAC',
+                     '9'    => 'DualV34ModemNAC',
+                     '10'   => 'QuadV32DigitalModemNAC',
+                     '11'   => 'QuadV32AnalogModemNAC',
+                     '12'   => 'QuadV32DigAnlModemNAC',
+                     '13'   => 'QuadV34DigModemNAC',
+                     '14'   => 'QuadV34AnlModemNAC',
+                     '15'   => 'QuadV34DigAnlModemNAC',
+                     '16'   => 'SingleT1NAC',
+                     '17'   => 'EthernetGatewayNAC',
+                     '18'   => 'AccessServer',
+                     '19'   => '486TrGatewayNAC',
+                     '20'   => '486EthernetGatewayNAC',
+                     '22'   => 'DualRS232NAC',
+                     '23'   => '486X25GatewayNAC',
+                     '25'   => 'ApplicationServerNAC',
+                     '26'   => 'ISDNGatewayNAC',
+                     '27'   => 'ISDNpriT1NAC',
+                     '28'   => 'ClkedNetMgtCard',
+                     '29'   => 'ModemPoolManagementNAC',
+                     '30'   => 'ModemPoolNetserverNAC',
+                     '31'   => 'ModemPoolV34ModemNAC',
+                     '32'   => 'ModemPoolISDNNAC',
+                     '33'   => 'NTServerNAC',
+                     '34'   => 'QuadV34DigitalG2NAC',
+                     '35'   => 'QuadV34AnalogG2NAC',
+                     '36'   => 'QuadV34DigAnlgG2NAC',
+                     '37'   => 'NETServerFrameRelayNAC',
+                     '38'   => 'NETServerTokenRingNAC',
+                     '39'   => 'X2524ChannelNAC',
+                     '42'   => 'WirelessGatewayNac',
+                     '44'   => 'EnhancedAccessServer',
+                     '45'   => 'EnhancedISDNGatewayNAC',
+                     '1001' => 'DualT1NIC',
+                     '1002' => 'DualAlogMdmNIC',
+                     '1003' => 'QuadDgtlMdmNIC',
+                     '1004' => 'QuadAlogDgtlMdmNIC',
+                     '1005' => 'TokenRingNIC',
+                     '1006' => 'SingleT1NIC',
+                     '1007' => 'EthernetNIC',
+                     '1008' => 'ShortHaulDualT1NIC',
+                     '1009' => 'DualAlogMgdIntlMdmNIC',
+                     '1010' => 'X25NIC',
+                     '1011' => 'QuadAlogNonMgdMdmNIC',
+                     '1012' => 'QuadAlogMgdIntlMdmNIC',
+                     '1013' => 'QuadAlogNonMgdIntlMdmNIC',
+                     '1014' => 'QuadLsdLiMgdMdmNIC',
+                     '1015' => 'QuadLsdLiNonMgdMdmNIC',
+                     '1016' => 'QuadLsdLiMgdIntlMdmNIC',
+                     '1017' => 'QuadLsdLiNonMgdIntlMdmNIC',
+                     '1018' => 'HSEthernetWithV35NIC',
+                     '1019' => 'HSEthernetWithoutV35NIC',
+                     '1020' => 'DualHighSpeedV35NIC',
+                     '1021' => 'QuadV35RS232LowSpeedNIC',
+                     '1022' => 'DualE1NIC',
+                     '1023' => 'ShortHaulDualE1NIC',
+                     '1025' => 'BellcoreLongHaulDualT1NIC',
+                     '1026' => 'BellcoreShrtHaulDualT1NIC',
+                     '1027' => 'SCSIEdgeServerNIC',
+                     },
+           'name' => 'USR-Card-Type',
+           },
+'11019' => { 'name' => 'USR-Chassis-Slot' },
+'11020' => {
+           'enum' => { '1' => 'Asynchronous', '2' => 'Synchronous' },
+           'name' => 'USR-Sync-Async-Mode',
+           },
+'11021' => {
+           'enum' => {
+                     '1' => 'Originate-in-Originate-Mode',
+                     '2' => 'Originate-in-Answer-Mode',
+                     '3' => 'Answer-in-Originate-Mode',
+                     '4' => 'Answer-in-Answer-Mode',
+                     },
+           'name' => 'USR-Originate-Answer-Mode',
+           },
+'11022' => {
+           'enum' => {
+                     '1'  => 'usRoboticsHST',
+                     '2'  => 'ccittV32',
+                     '3'  => 'ccittV22bis',
+                     '4'  => 'bell103',
+                     '5'  => 'ccittV21',
+                     '6'  => 'bell212',
+                     '7'  => 'ccittV32bis',
+                     '8'  => 'ccittV23',
+                     '9'  => 'negotiationFailed',
+                     '10' => 'bell208b',
+                     '11' => 'v21FaxClass1',
+                     '12' => 'v27FaxClass1',
+                     '13' => 'v29FaxClass1',
+                     '14' => 'v17FaxClass1',
+                     '15' => 'v21FaxClass2',
+                     '16' => 'v27FaxClass2',
+                     '17' => 'v29FaxClass2',
+                     '18' => 'v17FaxClass2',
+                     '19' => 'v32Terbo',
+                     '20' => 'v34',
+                     '21' => 'vFC',
+                     '22' => 'v34plus',
+                     '23' => 'x2',
+                     '24' => 'v110',
+                     '25' => 'v120',
+                     '26' => 'x75',
+                     '27' => 'ayncSyncPPP',
+                     '28' => 'clearChannel',
+                     '29' => 'x2client',
+                     '30' => 'x2symmetric',
+                     '31' => 'piafs',
+                     '33' => 'v90Analogue',
+                     '34' => 'v90Digital',
+                     '35' => 'v90AllDigital',
+                     },
+           'name' => 'USR-Modulation-Type',
+           },
+'11023' => {
+           'enum' => {
+                     '1'  => 'usRoboticsHST',
+                     '2'  => 'ccittV32',
+                     '3'  => 'ccittV22bis',
+                     '4'  => 'bell103',
+                     '5'  => 'ccittV21',
+                     '6'  => 'bell212',
+                     '7'  => 'ccittV32bis',
+                     '8'  => 'ccittV23',
+                     '9'  => 'negotiationFailed',
+                     '10' => 'bell208b',
+                     '11' => 'v21FaxClass1',
+                     '12' => 'v27FaxClass1',
+                     '13' => 'v29FaxClass1',
+                     '14' => 'v17FaxClass1',
+                     '15' => 'v21FaxClass2',
+                     '16' => 'v27FaxClass2',
+                     '17' => 'v29FaxClass2',
+                     '18' => 'v17FaxClass2',
+                     '19' => 'v32Terbo',
+                     '20' => 'v34',
+                     '21' => 'vFC',
+                     '22' => 'v34plus',
+                     '23' => 'x2',
+                     '24' => 'v110',
+                     '25' => 'v120',
+                     '26' => 'x75',
+                     '27' => 'ayncSyncPPP',
+                     '28' => 'clearChannel',
+                     '29' => 'x2client',
+                     '30' => 'x2symmetric',
+                     '31' => 'piafs',
+                     '33' => 'v90Analogue',
+                     '34' => 'v90Digital',
+                     '35' => 'v90AllDigital',
+                     },
+           'name' => 'USR-Initial-Modulation-Type',
+           },
+'11024' => {
+           'enum' => {
+                     '1'  => 'dtrDrop',
+                     '2'  => 'escapeSequence',
+                     '3'  => 'athCommand',
+                     '4'  => 'carrierLoss',
+                     '5'  => 'inactivityTimout',
+                     '6'  => 'mnpIncompatible',
+                     '7'  => 'undefined',
+                     '8'  => 'remotePassword',
+                     '9'  => 'linkPassword',
+                     '10' => 'retransmitLimit',
+                     '11' => 'linkDisconnectMsgReceived',
+                     '12' => 'noLoopCurrent',
+                     '13' => 'invalidSpeed',
+                     '14' => 'unableToRetrain',
+                     '15' => 'managementCommand',
+                     '16' => 'noDialTone',
+                     '17' => 'keyAbort',
+                     '18' => 'lineBusy',
+                     '19' => 'noAnswer',
+                     '20' => 'voice',
+                     '21' => 'noAnswerTone',
+                     '22' => 'noCarrier',
+                     '23' => 'undetermined',
+                     '24' => 'v42SabmeTimeout',
+                     '25' => 'v42BreakTimeout',
+                     '26' => 'v42DisconnectCmd',
+                     '27' => 'v42IdExchangeFail',
+                     '28' => 'v42BadSetup',
+                     '29' => 'v42InvalidCodeWord',
+                     '30' => 'v42StringToLong',
+                     '31' => 'v42InvalidCommand',
+                     '32' => 'none',
+                     '33' => 'v32Cleardown',
+                     '34' => 'dialSecurity',
+                     '35' => 'remoteAccessDenied',
+                     '36' => 'loopLoss',
+                     '37' => 'ds0Teardown',
+                     '38' => 'promptNotEnabled',
+                     '39' => 'noPromptingInSync',
+                     '40' => 'nonArqMode',
+                     '41' => 'modeIncompatible',
+                     '42' => 'noPromptInNonARQ',
+                     '43' => 'dialBackLink',
+                     '44' => 'linkAbort',
+                     '45' => 'autopassFailed',
+                     '46' => 'pbGenericError',
+                     '47' => 'pbLinkErrTxPreAck',
+                     '48' => 'pbLinkErrTxTardyACK',
+                     '49' => 'pbTransmitBusTimeout',
+                     '50' => 'pbReceiveBusTimeout',
+                     '51' => 'pbLinkErrTxTAL',
+                     '52' => 'pbLinkErrRxTAL',
+                     '53' => 'pbTransmitMasterTimeout',
+                     '54' => 'pbClockMissing',
+                     '55' => 'pbReceivedLsWhileLinkUp',
+                     '56' => 'pbOutOfSequenceFrame',
+                     '57' => 'pbBadFrame',
+                     '58' => 'pbAckWaitTimeout',
+                     '59' => 'pbReceivedAckSeqErr',
+                     '60' => 'pbReceiveOvrflwRNRFail',
+                     '61' => 'pbReceiveMsgBufOvrflw',
+                     '62' => 'rcvdGatewayDiscCmd',
+                     '63' => 'tokenPassingTimeout',
+                     '64' => 'dspInterruptTimeout',
+                     '65' => 'mnpProtocolViolation',
+                     '66' => 'class2FaxHangupCmd',
+                     '67' => 'hstSpeedSwitchTimeout',
+                     '68' => 'tooManyUnacked',
+                     '69' => 'timerExpired',
+                     '70' => 't1Glare',
+                     '71' => 'priDialoutRqTimeout',
+                     '72' => 'abortAnlgDstOvrIsdn',
+                     '73' => 'normalUserCallClear',
+                     '74' => 'normalUnspecified',
+                     '75' => 'bearerIncompatibility',
+                     '76' => 'protocolErrorEvent',
+                     '77' => 'abnormalDisconnect',
+                     '78' => 'invalidCauseValue',
+                     },
+           'name' => 'USR-Connect-Term-Reason',
+           },
+'11025' => {
+           'enum' => {
+                     '1'  => 'dtrDrop',
+                     '2'  => 'escapeSequence',
+                     '3'  => 'athCommand',
+                     '4'  => 'carrierLoss',
+                     '5'  => 'inactivityTimout',
+                     '6'  => 'mnpIncompatible',
+                     '7'  => 'undefined',
+                     '8'  => 'remotePassword',
+                     '9'  => 'linkPassword',
+                     '10' => 'retransmitLimit',
+                     '11' => 'linkDisconnectMsgRec',
+                     '12' => 'noLoopCurrent',
+                     '13' => 'invalidSpeed',
+                     '14' => 'unableToRetrain',
+                     '15' => 'managementCommand',
+                     '16' => 'noDialTone',
+                     '17' => 'keyAbort',
+                     '18' => 'lineBusy',
+                     '19' => 'noAnswer',
+                     '20' => 'voice',
+                     '21' => 'noAnswerTone',
+                     '22' => 'noCarrier',
+                     '23' => 'undetermined',
+                     '24' => 'v42SabmeTimeout',
+                     '25' => 'v42BreakTimeout',
+                     '26' => 'v42DisconnectCmd',
+                     '27' => 'v42IdExchangeFail',
+                     '28' => 'v42BadSetup',
+                     '29' => 'v42InvalidCodeWord',
+                     '30' => 'v42StringToLong',
+                     '31' => 'v42InvalidCommand',
+                     '32' => 'none',
+                     '33' => 'v32Cleardown',
+                     '34' => 'dialSecurity',
+                     '35' => 'remoteAccessDenied',
+                     '36' => 'loopLoss',
+                     '37' => 'ds0Teardown',
+                     '38' => 'promptNotEnabled',
+                     '39' => 'noPromptingInSync',
+                     '40' => 'nonArqMode',
+                     '41' => 'modeIncompatible',
+                     '42' => 'noPromptInNonARQ',
+                     '43' => 'dialBackLink',
+                     '44' => 'linkAbort',
+                     '45' => 'autopassFailed',
+                     '46' => 'pbGenericError',
+                     '47' => 'pbLinkErrTxPreAck',
+                     '48' => 'pbLinkErrTxTardyACK',
+                     '49' => 'pbTransmitBusTimeout',
+                     '50' => 'pbReceiveBusTimeout',
+                     '51' => 'pbLinkErrTxTAL',
+                     '52' => 'pbLinkErrRxTAL',
+                     '53' => 'pbTransmitMasterTimeout',
+                     '54' => 'pbClockMissing',
+                     '55' => 'pbReceivedLsWhileLinkUp',
+                     '56' => 'pbOutOfSequenceFrame',
+                     '57' => 'pbBadFrame',
+                     '58' => 'pbAckWaitTimeout',
+                     '59' => 'pbReceivedAckSeqErr',
+                     '60' => 'pbReceiveOvrflwRNRFail',
+                     '61' => 'pbReceiveMsgBufOvrflw',
+                     '62' => 'rcvdGatewayDiscCmd',
+                     '63' => 'tokenPassingTimeout',
+                     '64' => 'dspInterruptTimeout',
+                     '65' => 'mnpProtocolViolation',
+                     '66' => 'class2FaxHangupCmd',
+                     '67' => 'hstSpeedSwitchTimeout',
+                     '68' => 'tooManyUnacked',
+                     '69' => 'timerExpired',
+                     '70' => 't1Glare',
+                     '71' => 'priDialoutRqTimeout',
+                     '72' => 'abortAnlgDstOvrIsdn',
+                     '73' => 'normalUserCallClear',
+                     '74' => 'normalUnspecified',
+                     '75' => 'bearerIncompatibility',
+                     '76' => 'protocolErrorEvent',
+                     '77' => 'abnormalDisconnect',
+                     '78' => 'invalidCauseValue',
+                     },
+           'name' => 'USR-Failure-to-Connect-Reason',
+           },
+'11026' => {
+           'enum' => { '1' => 'Long', '2' => 'Short' },
+           'name' => 'USR-Equalization-Type',
+           },
+'11027' => {
+           'enum' => { '1' => 'Disabled', '2' => 'Enabled' },
+           'name' => 'USR-Fallback-Enabled',
+           },
+'11028' => { 'name' => 'USR-Connect-Time-Limit' },
+'11029' => { 'name' => 'USR-Number-of-Rings-Limit' },
+'11030' => { 'name' => 'USR-DTE-Data-Idle-Timout' },
+'11031' => { 'name' => 'USR-Characters-Sent' },
+'11032' => { 'name' => 'USR-Characters-Received' },
+'11033' => { 'name' => 'USR-Blocks-Sent' },
+'11034' => { 'name' => 'USR-Blocks-Received' },
+'11035' => { 'name' => 'USR-Blocks-Resent' },
+'11036' => { 'name' => 'USR-Retrains-Requested' },
+'11037' => { 'name' => 'USR-Retrains-Granted' },
+'11038' => { 'name' => 'USR-Line-Reversals' },
+'11039' => { 'name' => 'USR-Number-Of-Characters-Lost' },
+'11040' => { 'name' => 'USR-Number-of-Blers' },
+'11041' => { 'name' => 'USR-Number-of-Link-Timeouts' },
+'11042' => { 'name' => 'USR-Number-of-Fallbacks' },
+'11043' => { 'name' => 'USR-Number-of-Upshifts' },
+'11044' => { 'name' => 'USR-Number-of-Link-NAKs' },
+'11045' => { 'name' => 'USR-DTR-False-Timeout' },
+'11046' => { 'name' => 'USR-Fallback-Limit' },
+'11047' => { 'name' => 'USR-Block-Error-Count-Limit' },
+'11048' => { 'name' => 'USR-DTR-True-Timeout' },
+'11049' => { 'name' => 'USR-Security-Login-Limit' },
+'11050' => { 'name' => 'USR-Security-Resp-Limit' },
+'11051' => { 'name' => 'USR-DTE-Ring-No-Answer-Limit' },
+'11052' => {
+           'enum' => { '1' => '450BPS', '2' => '300BPS', '3' => 'None' },
+           'name' => 'USR-Back-Channel-Data-Rate',
+           },
+'11053' => {
+           'enum' => {
+                     '1'  => 'none',
+                     '2'  => 'mnpLevel3',
+                     '3'  => 'mnpLevel4',
+                     '4'  => 'ccittV42',
+                     '5'  => 'usRoboticsHST',
+                     '6'  => 'synchronousNone',
+                     '7'  => 'mnpLevel2',
+                     '8'  => 'mnp10',
+                     '9'  => 'v42Etc',
+                     '10' => 'mnp10Ec',
+                     '11' => 'lapmEc',
+                     '12' => 'v42Etc2',
+                     '13' => 'ccittV42SREJ',
+                     '14' => 'piafs',
+                     },
+           'name' => 'USR-Simplified-MNP-Levels',
+           },
+'11054' => {
+           'enum' => { '1' => 'none', '2' => 'ccittV42bis', '3' => 'mnpLevel5' },
+           'name' => 'USR-Simplified-V42bis-Usage',
+           },
+'11055' => { 'name' => 'USR-Mbi-Ct-PRI-Card-Slot' },
+'11056' => { 'name' => 'USR-Mbi-Ct-TDM-Time-Slot' },
+'11057' => { 'name' => 'USR-Mbi-Ct-PRI-Card-Span-Line' },
+'11058' => { 'name' => 'USR-Mbi-Ct-BChannel-Used' },
+'11059' => { 'name' => 'USR-Physical-State' },
+'11060' => { 'name' => 'USR-Packet-Bus-Session' },
+'11061' => { 'name' => 'USR-Server-Time' },
+'11062' => { 'name' => 'USR-Channel-Connected-To' },
+'11063' => { 'name' => 'USR-Slot-Connected-To' },
+'11064' => {
+           'enum' => { '1' => 'None', '2' => 'isdnGateway', '3' => 'quadModem' },
+           'name' => 'USR-Device-Connected-To',
+           },
+'11065' => { 'name' => 'USR-NFAS-ID' },
+'11066' => { 'name' => 'USR-Q931-Call-Reference-Value' },
+'11067' => {
+           'enum' => {
+                     '1'  => 'notSupported',
+                     '2'  => 'setup',
+                     '3'  => 'usrSetup',
+                     '4'  => 'telcoDisconnect',
+                     '5'  => 'usrDisconnect',
+                     '6'  => 'noFreeModem',
+                     '7'  => 'modemsNotAllowed',
+                     '8'  => 'modemsRejectCall',
+                     '9'  => 'modemSetupTimeout',
+                     '10' => 'noFreeIGW',
+                     '11' => 'igwRejectCall',
+                     '12' => 'igwSetupTimeout',
+                     '13' => 'noFreeTdmts',
+                     '14' => 'bcReject',
+                     '15' => 'ieReject',
+                     '16' => 'chidReject',
+                     '17' => 'progReject',
+                     '18' => 'callingPartyReject',
+                     '19' => 'calledPartyReject',
+                     '20' => 'blocked',
+                     '21' => 'analogBlocked',
+                     '22' => 'digitalBlocked',
+                     '23' => 'outOfService',
+                     '24' => 'busy',
+                     '25' => 'congestion',
+                     '26' => 'protocolError',
+                     '27' => 'noFreeBchannel',
+                     '28' => 'inOutCallCollision',
+                     '29' => 'inCallArrival',
+                     '30' => 'outCallArrival',
+                     '31' => 'inCallConnect',
+                     '32' => 'outCallConnect',
+                     },
+           'name' => 'USR-Call-Event-Code',
+           },
+'11068' => { 'name' => 'USR-DS0' },
+'11069' => { 'name' => 'USR-DS0s' },
+'11070' => { 'name' => 'USR-Gateway-IP-Address' },
+'11071' => { 'name' => 'USR-Call-Arrival-in-GMT' },
+'11072' => { 'name' => 'USR-Call-Connect-in-GMT' },
+'11073' => { 'name' => 'USR-Call-Terminate-in-GMT' },
+'11074' => { 'name' => 'USR-IDS0-Call-Type' },
+'11075' => { 'name' => 'USR-Call-Reference-Number' },
+'11076' => { 'name' => 'USR-CDMA-Call-Reference-Number' },
+'11077' => { 'name' => 'USR-Mobile-IP-Address' },
+'11078' => { 'name' => 'USR-IWF-IP-Address' },
+'11079' => { 'name' => 'USR-Called-Party-Number' },
+'11080' => { 'name' => 'USR-Calling-Party-Number' },
+'11081' => { 'name' => 'USR-Call-Type' },
+'11082' => { 'name' => 'USR-ESN' },
+'11083' => { 'name' => 'USR-IWF-Call-Identifier' },
+'11084' => { 'name' => 'USR-IMSI' },
+'11085' => { 'name' => 'USR-Service-Option' },
+'11086' => { 'name' => 'USR-Disconnect-Cause-Indicator' },
+'11087' => { 'name' => 'USR-Mobile-NumBytes-Txed' },
+'11088' => { 'name' => 'USR-Mobile-NumBytes-Rxed' },
+'11089' => { 'name' => 'USR-Num-Fax-Pages-Processed' },
+'11090' => { 'name' => 'USR-Compression-Type' },
+'11091' => { 'name' => 'USR-Call-Error-Code' },
+'11092' => { 'name' => 'USR-Modem-Setup-Time' },
+'11093' => { 'name' => 'USR-Call-Connecting-Time' },
+'11094' => { 'name' => 'USR-Connect-Time' },
+'11095' => { 'name' => 'USR-RMMIE-Manufacutere-ID' },
+'11096' => { 'name' => 'USR-RMMIE-Product-Code' },
+'11097' => { 'name' => 'USR-RMMIE-Serial-Number' },
+'11098' => { 'name' => 'USR-RMMIE-Firmware-Version' },
+'11099' => { 'name' => 'USR-RMMIE-Firmware-Build-Date' },
+'11100' => {
+           'enum' => {
+                     '1' => 'notEnabledInLocalModem',
+                     '2' => 'notDetectedInRemoteModem',
+                     '3' => 'ok',
+                     },
+           'name' => 'USR-RMMIE-Status',
+           },
+'11101' => { 'name' => 'USR-RMMIE-Num-Of-Updates' },
+'11102' => {
+           'enum' => {
+                     '1'  => 'notOperational',
+                     '2'  => 'operational',
+                     '3'  => 'x2Disabled',
+                     '4'  => 'v8Disabled',
+                     '5'  => 'remote3200Disabled',
+                     '6'  => 'invalidSpeedSetting',
+                     '7'  => 'v8NotDetected',
+                     '8'  => 'x2NotDetected',
+                     '9'  => 'incompatibleVersion',
+                     '10' => 'incompatibleModes',
+                     '11' => 'local3200Disabled',
+                     '12' => 'excessHighFrequencyAtten',
+                     '13' => 'connectNotSupport3200',
+                     '14' => 'retrainBeforeConnection',
+                     },
+           'name' => 'USR-RMMIE-x2-Status',
+           },
+'11103' => {
+           'enum' => {
+                     '1'  => 'none',
+                     '2'  => 'dteNotReady',
+                     '3'  => 'dteInterfaceError',
+                     '4'  => 'dteRequest',
+                     '5'  => 'escapeToOnlineCommandMode',
+                     '6'  => 'athCommand',
+                     '7'  => 'inactivityTimeout',
+                     '8'  => 'arqProtocolError',
+                     '9'  => 'arqProtocolRetransmitLim',
+                     '10' => 'invalidComprDataCodeword',
+                     '11' => 'invalidComprDataStringLen',
+                     '12' => 'invalidComprDataCommand',
+                     },
+           'name' => 'USR-RMMIE-Planned-Disconnect',
+           },
+'11104' => { 'name' => 'USR-RMMIE-Last-Update-Time' },
+'11105' => {
+           'enum' => {
+                     '1' => 'none',
+                     '2' => 'initialConnection',
+                     '3' => 'retrain',
+                     '4' => 'speedShift',
+                     '5' => 'plannedDisconnect',
+                     },
+           'name' => 'USR-RMMIE-Last-Update-Event',
+           },
+'11106' => { 'name' => 'USR-RMMIE-Rcv-Tot-PwrLvl' },
+'11107' => { 'name' => 'USR-RMMIE-Rcv-PwrLvl-3300Hz' },
+'11108' => { 'name' => 'USR-RMMIE-Rcv-PwrLvl-3750Hz' },
+'11109' => { 'name' => 'USR-RMMIE-PwrLvl-NearEcho-Canc' },
+'11110' => { 'name' => 'USR-RMMIE-PwrLvl-FarEcho-Canc' },
+'11111' => { 'name' => 'USR-RMMIE-PwrLvl-Noise-Lvl' },
+'11112' => { 'name' => 'USR-RMMIE-PwrLvl-Xmit-Lvl' },
+'11113' => { 'name' => 'USR-PW-USR-IFilter-IP' },
+'11114' => { 'name' => 'USR-PW-USR-IFilter-IPX' },
+'11115' => { 'name' => 'USR-PW-USR-IFilter-SAP' },
+'11116' => { 'name' => 'USR-PW-USR-OFilter-IP' },
+'11117' => { 'name' => 'USR-PW-USR-OFilter-IPX' },
+'11118' => { 'name' => 'USR-PW-USR-OFilter-SAP' },
+'11119' => { 'name' => 'USR-PW-VPN-ID' },
+'11120' => { 'name' => 'USR-PW-VPN-Name' },
+'11121' => { 'name' => 'USR-PW-VPN-Neighbor' },
+'11122' => {
+           'enum' => { '0' => 'Off', '1' => 'On' },
+           'name' => 'USR-PW-Framed-Routing-V2',
+           },
+'11123' => { 'name' => 'USR-PW-VPN-Gateway' },
+'11124' => { 'name' => 'USR-PW-Tunnel-Authentication' },
+'11125' => { 'name' => 'USR-PW-Index' },
+'11126' => { 'name' => 'USR-PW-Cutoff' },
+'11127' => { 'name' => 'USR-PW-Packet' },
+'11128' => { 'name' => 'USR-Primary-DNS-Server' },
+'11129' => { 'name' => 'USR-Secondary-DNS-Server' },
+'11130' => { 'name' => 'USR-Primary-NBNS-Server' },
+'11131' => { 'name' => 'USR-Secondary-NBNS-Server' },
+'11132' => {
+           'enum' => { '0' => 'Off', '1' => 'Raw', '2' => 'Framed' },
+           'name' => 'USR-Syslog-Tap',
+           },
+'11133' => { 'name' => 'USR-Log-Filter-Packet' },
+'11134' => { 'name' => 'USR-Chassis-Call-Slot' },
+'11135' => { 'name' => 'USR-Chassis-Call-Span' },
+'11136' => { 'name' => 'USR-Chassis-Call-Channel' },
+'11137' => { 'name' => 'USR-Keypress-Timeout' },
+'11138' => { 'name' => 'USR-Unauthenticated-Time' },
+'11139' => { 'name' => 'USR-VPN-Encryptor' },
+'11140' => { 'name' => 'USR-VPN-GW-Location-Id' },
+'11141' => { 'name' => 'USR-Re-Chap-Timeout' },
+'11142' => {
+           'enum' => { '1' => 'NONE', '2' => 'Stac', '3' => 'MS', '4' => 'Any' },
+           'name' => 'USR-CCP-Algorithm',
+           },
+'11143' => { 'name' => 'USR-ACCM-Type' },
+'11144' => {
+           'enum' => {
+                     '1'  => 'NONE',
+                     '2'  => '300-BPS',
+                     '3'  => '1200-BPS',
+                     '4'  => '2400-BPS',
+                     '5'  => '4800-BPS',
+                     '6'  => '7200-BPS',
+                     '7'  => '9600-BPS',
+                     '8'  => '12000-BPS',
+                     '9'  => '14400-BPS',
+                     '10' => '16800-BPS',
+                     '11' => '19200-BPS',
+                     '12' => '21600-BPS',
+                     '13' => '28800-BPS',
+                     '14' => '38400-BPS',
+                     '15' => '57600-BPS',
+                     '16' => '115200-BPS',
+                     '17' => '288000-BPS',
+                     '18' => '75-1200-BPS',
+                     '19' => '1200-75-BPS',
+                     '20' => '24000-BPS',
+                     '21' => '26400-BPS',
+                     '22' => '31200-BPS',
+                     '23' => '33600-BPS',
+                     '24' => '33333-BPS',
+                     '25' => '37333-BPS',
+                     '26' => '41333-BPS',
+                     '27' => '42666-BPS',
+                     '28' => '44000-BPS',
+                     '29' => '45333-BPS',
+                     '30' => '46666-BPS',
+                     '31' => '48000-BPS',
+                     '32' => '49333-BPS',
+                     '33' => '50666-BPS',
+                     '34' => '52000-BPS',
+                     '35' => '53333-BPS',
+                     '36' => '54666-BPS',
+                     '37' => '56000-BPS',
+                     '38' => '57333-BPS',
+                     '39' => '64000-BPS',
+                     '40' => '25333-BPS',
+                     '41' => '26666-BPS',
+                     '42' => '28000-BPS',
+                     '43' => '29333-BPS',
+                     '44' => '30666-BPS',
+                     '45' => '32000-BPS',
+                     '46' => '34666-BPS',
+                     '47' => '36000-BPS',
+                     '48' => '38666-BPS',
+                     '49' => '40000-BPS',
+                     '50' => '58666-BPS',
+                     '51' => '60000-BPS',
+                     '52' => '61333-BPS',
+                     '53' => '62666-BPS',
+                     },
+           'name' => 'USR-Connect-Speed',
+           },
+'11145' => { 'name' => 'USR-Framed-IP-Address-Pool-Name' },
+'11146' => { 'name' => 'USR-MP-EDO' },
+'11147' => { 'name' => 'USR-Local-Framed-IP-Addr' },
+'11148' => { 'name' => 'USR-Framed-IPX-Route' },
+'11149' => { 'name' => 'USR-MPIP-Tunnel-Originator' },
+'11150' => { 'name' => 'USR-Bearer-Capabilities' },
+'11151' => {
+           'enum' => { '0' => 'Auto', '1' => 56, '2' => 64, '3' => 'Voice' },
+           'name' => 'USR-Speed-Of-Connection',
+           },
+'11152' => { 'name' => 'USR-Max-Channels' },
+'11153' => { 'name' => 'USR-Channel-Expansion' },
+'11154' => { 'name' => 'USR-Channel-Decrement' },
+'11155' => {
+           'enum' => { '1' => 'Constant', '2' => 'Linear' },
+           'name' => 'USR-Expansion-Algorithm',
+           },
+'11156' => {
+           'enum' => {
+                     '0' => 'None',
+                     '1' => 'Stac',
+                     '2' => 'Ascend',
+                     '3' => 'Microsoft',
+                     '4' => 'Auto',
+                     },
+           'name' => 'USR-Compression-Algorithm',
+           },
+'11157' => { 'name' => 'USR-Receive-Acc-Map' },
+'11158' => { 'name' => 'USR-Transmit-Acc-Map' },
+'11159' => {
+           'enum' => { '0' => 'Auto', '1' => 'Reset-Every-Packet', '2' => 'Reset-On-Error' },
+           'name' => 'USR-Compression-Reset-Mode',
+           },
+'11160' => { 'name' => 'USR-Min-Compression-Size' },
+'11161' => { 'name' => 'USR-IP' },
+'11162' => { 'name' => 'USR-IPX' },
+'11163' => {
+           'enum' => { '1' => 'enabled', '2' => 'disabled' },
+           'name' => 'USR-Filter-Zones',
+           },
+'11164' => {
+           'enum' => { '1' => 'enabled', '2' => 'disabled' },
+           'name' => 'USR-Appletalk',
+           },
+'11165' => {
+           'enum' => { '1' => 'enabled', '2' => 'disabled' },
+           'name' => 'USR-Bridging',
+           },
+'11166' => {
+           'enum' => { '1' => 'enabled', '2' => 'disabled' },
+           'name' => 'USR-Spoofing',
+           },
+'11167' => { 'name' => 'USR-Host-Type' },
+'11168' => { 'name' => 'USR-Send-Name' },
+'11169' => { 'name' => 'USR-Send-Password' },
+'11170' => { 'name' => 'USR-Start-Time' },
+'11171' => { 'name' => 'USR-End-Time' },
+'11172' => { 'name' => 'USR-Send-Script1' },
+'11173' => { 'name' => 'USR-Reply-Script1' },
+'11174' => { 'name' => 'USR-Send-Script2' },
+'11175' => { 'name' => 'USR-Reply-Script2' },
+'11176' => { 'name' => 'USR-Send-Script3' },
+'11177' => { 'name' => 'USR-Reply-Script3' },
+'11178' => { 'name' => 'USR-Send-Script4' },
+'11179' => { 'name' => 'USR-Reply-Script4' },
+'11180' => { 'name' => 'USR-Send-Script5' },
+'11181' => { 'name' => 'USR-Reply-Script5' },
+'11182' => { 'name' => 'USR-Send-Script6' },
+'11183' => { 'name' => 'USR-Reply-Script6' },
+'11184' => { 'name' => 'USR-Terminal-Type' },
+'11185' => { 'name' => 'USR-Appletalk-Network-Range' },
+'11186' => { 'name' => 'USR-Local-IP-Address' },
+'11187' => {
+           'enum' => { '1' => 'Rip1', '2' => 'Rip2' },
+           'name' => 'USR-Routing-Protocol',
+           },
+'11188' => { 'name' => 'USR-Modem-Group' },
+'11189' => {
+           'enum' => { '0' => 'none', '1' => 'send', '2' => 'listen', '3' => 'respond', '4' => 'all' },
+           'name' => 'USR-IPX-Routing',
+           },
+'11190' => {
+           'enum' => { '1' => 'enabled', '2' => 'disabled' },
+           'name' => 'USR-IPX-WAN',
+           },
+'11191' => {
+           'enum' => {
+                     '0'          => 'SendDefault',
+                     '2'          => 'SendRoutes',
+                     '4'          => 'SendSubnets',
+                     '8'          => 'AcceptDefault',
+                     '16'         => 'SplitHorizon',
+                     '32'         => 'PoisonReserve',
+                     '64'         => 'FlashUpdate',
+                     '128'        => 'SimpleAuth',
+                     '256'        => 'V1Send',
+                     '512'        => 'V1Receive',
+                     '1024'       => 'V2Receive',
+                     '2147483647' => 'Silent',
+                     },
+           'name' => 'USR-IP-RIP-Policies',
+           },
+'11192' => { 'name' => 'USR-IP-RIP-Simple-Auth-Password' },
+'11193' => { 'name' => 'USR-IP-RIP-Input-Filter' },
+'11194' => { 'name' => 'USR-IP-Call-Input-Filter' },
+'11195' => { 'name' => 'USR-IPX-RIP-Input-Filter' },
+'11196' => { 'name' => 'USR-MP-MRRU' },
+'11197' => { 'name' => 'USR-IPX-Call-Input-Filter' },
+'11198' => { 'name' => 'USR-AT-Input-Filter' },
+'11199' => { 'name' => 'USR-AT-RTMP-Input-Filter' },
+'11200' => { 'name' => 'USR-AT-Zip-Input-Filter' },
+'11201' => { 'name' => 'USR-AT-Call-Input-Filter' },
+'11202' => { 'name' => 'USR-ET-Bridge-Input-Filter' },
+'11203' => { 'name' => 'USR-IP-RIP-Output-Filter' },
+'11204' => { 'name' => 'USR-IP-Call-Output-Filter' },
+'11205' => { 'name' => 'USR-IPX-RIP-Output-Filter' },
+'11206' => { 'name' => 'USR-IPX-Call-Output-Filter' },
+'11207' => { 'name' => 'USR-AT-Output-Filter' },
+'11208' => { 'name' => 'USR-AT-RTMP-Output-Filter' },
+'11209' => { 'name' => 'USR-AT-Zip-Output-Filter' },
+'11210' => { 'name' => 'USR-AT-Call-Output-Filter' },
+'11211' => { 'name' => 'USR-ET-Bridge-Output-Filter' },
+'11212' => { 'name' => 'USR-ET-Bridge-Call-Output-Filter' },
+'11213' => {
+           'enum' => { '1' => 'enabled', '2' => 'disabled' },
+           'name' => 'USR-IP-Default-Route-Option',
+           },
+'11214' => { 'name' => 'USR-MP-EDO-HIPER' },
+'11215' => { 'name' => 'USR-Modem-Training-Time' },
+'11216' => { 'name' => 'USR-Interface-Index' },
+'11217' => {
+           'enum' => {
+                     '0' => 'None',
+                     '1' => 'Control-Only',
+                     '2' => 'Data-Only',
+                     '3' => 'Both-Data-and-Control',
+                     },
+           'name' => 'USR-Tunnel-Security',
+           },
+'11218' => { 'name' => 'USR-Port-Tap' },
+'11219' => { 'name' => 'USR-Port-Tap-Format' },
+'11220' => { 'name' => 'USR-Port-Tap-Output' },
+'11221' => { 'name' => 'USR-Port-Tap-Facility' },
+'11222' => { 'name' => 'USR-Port-Tap-Priority' },
+'11223' => { 'name' => 'USR-Port-Tap-Address' },
+'11224' => { 'name' => 'USR-MobileIP-Home-Agent-Address' },
+'11225' => { 'name' => 'USR-Tunneled-MLPP' },
+'11226' => { 'name' => 'USR-Multicast-Proxy' },
+'11227' => { 'name' => 'USR-Multicast-Receive' },
+'11228' => { 'name' => 'USR-Multicast-Forwarding' },
+'11229' => { 'name' => 'USR-IGMP-Query-Interval' },
+'11230' => { 'name' => 'USR-IGMP-Maximum-Response-Time' },
+'11231' => { 'name' => 'USR-IGMP-Robustness' },
+'11232' => { 'name' => 'USR-IGMP-Version' },
+'11233' => { 'name' => 'USR-IGMP-Routing' },
+'11234' => { 'name' => 'USR-VTS-Session-Key' },
+'11235' => { 'name' => 'USR-Orig-NAS-Type' },
+'11236' => { 'name' => 'USR-Call-Arrival-Time' },
+'11237' => { 'name' => 'USR-Call-End-Time' },
+'11238' => { 'name' => 'USR-Rad-Multicast-Routing-Ttl' },
+'11239' => { 'name' => 'USR-Rad-Multicast-Routing-Rate-Limit' },
+'11240' => { 'name' => 'USR-Rad-Multicast-Routing-Protocol' },
+'11241' => { 'name' => 'USR-Rad-Multicast-Routing-Boundary' },
+'11242' => { 'name' => 'USR-Rad-Dvmrp-Metric' },
+'11243' => { 'name' => 'USR-Chat-Script-Name' },
+'11244' => { 'name' => 'USR-Chat-Script-Rules' },
+'11245' => { 'name' => 'USR-Rad-Location-Type' },
+'11246' => { 'name' => 'USR-Tunnel-Switch-Endpoint' },
+'11247' => { 'name' => 'USR-OSPF-Addressless-Index' },
+'11248' => {
+           'enum' => { '1' => 'Normal', '2' => 'ANI', '3' => 'Static', '4' => 'Dynamic' },
+           'name' => 'USR-Callback-Type',
+           },
+'11249' => { 'name' => 'USR-Tunnel-Auth-Hostname' },
+'11250' => { 'name' => 'USR-Acct-Reason-Code' },
+'11251' => { 'name' => 'USR-DNIS-ReAuthentication' },
+'11252' => { 'name' => 'USR-PPP-Source-IP-Filter' },
+'11253' => {
+           'enum' => {
+                     '0' => 'Auth-3Com',
+                     '1' => 'Auth-Ace',
+                     '2' => 'Auth-Safeword',
+                     '3' => 'Auth-UNIX-PW',
+                     '4' => 'Auth-Defender',
+                     '5' => 'Auth-TACACSP',
+                     '6' => 'Auth-Netware',
+                     '7' => 'Auth-Skey',
+                     '8' => 'Auth-EAP-Proxy',
+                     '9' => 'Auth-UNIX-Crypt',
+                     },
+           'name' => 'USR-Auth-Mode',
+           },
+'11254' => {
+           'enum' => {
+                     '0' => '3Com-NMC',
+                     '1' => '3Com-NETServer',
+                     '2' => '3Com-HiPerArc',
+                     '3' => 'TACACS+-Server',
+                     '4' => '3Com-SA-Server',
+                     '5' => 'Ascend',
+                     '6' => 'Generic-RADIUS',
+                     '7' => '3Com-NETBuilder-II',
+                     },
+           'name' => 'USR-NAS-Type',
+           },
+'11255' => {
+           'enum' => {
+                     '1'   => 'Access-Request',
+                     '2'   => 'Access-Accept',
+                     '3'   => 'Access-Reject',
+                     '4'   => 'Accounting-Request',
+                     '5'   => 'Accounting-Response',
+                     '7'   => 'Access-Password-Change',
+                     '8'   => 'Access-Password-Ack',
+                     '9'   => 'Access-Password-Reject',
+                     '11'  => 'Access-Challenge',
+                     '12'  => 'Status-Server',
+                     '13'  => 'Status-Client',
+                     '21'  => 'Resource-Free-Request',
+                     '22'  => 'Resource-Free-Response',
+                     '23'  => 'Resource-Query-Request',
+                     '24'  => 'Resource-Query-Response',
+                     '25'  => 'Disconnect-User',
+                     '26'  => 'NAS-Reboot-Request',
+                     '27'  => 'NAS-Reboot-Response',
+                     '253' => 'Tacacs-Message',
+                     '255' => 'Reserved',
+                     },
+           'name' => 'USR-Request-Type',
+           },
 );
-
-my %reason_codes = (
- 0 => 'Success', 
- 1 => 'Internal error', 
- 2 => 'Access denied',
- 3 => 'Malformed request',
- 4 => 'Global catalog unavailable',
- 5 => 'Domain unavailable',
- 6 => 'Server unavailable',
- 7 => 'No such domain', 
- 8 => 'No such user', 
-16 => 'Authentication failure', 
-17 => 'Password change failure', 
-18 => 'Unsupported authentication type',
-19 => 'No reversibly encrypted password is stored for the user account',
-32 => 'Local users only', 
-33 => 'Password must be changed', 
-34 => 'Account disabled', 
-35 => 'Account expired', 
-36 => 'Account locked out', 
-37 => 'Invalid logon hours', 
-38 => 'Account restriction', 
-48 => 'Did not match remote access policy', 
-49 => 'Did not match connection request policy', 
-64 => 'Dial-in locked out', 
-65 => 'Dial-in disabled', 
-66 => 'Invalid authentication type', 
-67 => 'Invalid calling station', 
-68 => 'Invalid dial-in hours', 
-69 => 'Invalid called station', 
-70 => 'Invalid port type', 
-71 => 'Invalid restriction', 
-80 => 'No record',
-96 => 'Session timed out', 
-97 => 'Unexpected request', 
-);
-
-my $enumerate = {
-  'NAS-Port-Type' => {
-    '11' => 'SDSL - Symmetric DSL',
-    '21' => 'FDDI',
-    '7' => 'HDLC Clear Channel',
-    '17' => 'Cable',
-    '2' => 'ISDN Sync',
-    '1' => 'Sync (T1 Line)',
-    '18' => 'Wireless - Other',
-    '0' => 'Async (Modem)',
-    '16' => 'xDSL - Digital Subscriber Line of unknown type',
-    '13' => 'ADSL-DMT - Asymmetric DSL Discrete Multi-Tone',
-    '6' => 'PIAFS',
-    '3' => 'ISDN Async V.120',
-    '9' => 'X.75',
-    '12' => 'ADSL-CAP - Asymmetric DSL Carrierless Amplitude Phase Modulation',
-    '20' => 'Token Ring',
-    '14' => 'IDSL - ISDN Digital Subscriber Line',
-    '15' => 'Ethernet',
-    '8' => 'X.25',
-    '4' => 'ISDN Async V.110',
-    '19' => 'Wireless - IEEE 802.11',
-    '10' => 'G.3 Fax',
-    '5' => 'Virtual (VPN)'
-  },
-  'Tunnel-Type' => {
-    '6' => 'IP Authentication Header in the Tunnel-mode (AH)',
-    '11' => 'Bay Dial Virtual Services (DVS)',
-    '3' => 'Layer Two Tunneling Protocol (L2TP)',
-    '7' => 'IP-in-IP Encapsulation (IP-IP)',
-    '9' => 'IP Encapsulating Security Payload in the Tunnel-mode (ESP)',
-    '12' => 'IP-in-IP Tunneling',
-    '2' => 'Layer Two Forwarding (L2F)',
-    '8' => 'Minimal IP-in-IP Encapsulation (MIN-IP-IP)',
-    '1' => 'Point-to-Point Tunneling Protocol (PPTP)',
-    '4' => 'Ascend Tunnel Management Protocol (ATMP)',
-    '13' => 'Virtual LANs (VLAN)',
-    '10' => 'Generic Route Encapsulation (GRE)',
-    '5' => 'Virtual Tunneling Protocol (VTP)'
-  },
-  'USR-Final-Tx-Link-Data-Rate' => {
-    '33' => '36000-BPS',
-    '32' => '34666-BPS',
-    '21' => '28K-BPS',
-    '7' => '7200-BPS',
-    '26' => '26666-BPS',
-    '17' => '57.6K-BPS',
-    '2' => '300-BPS',
-    '1' => '110-BPS',
-    '18' => '21.6K-BPS',
-    '30' => '32000-BPS',
-    '16' => 'UNKNOWN-BPS',
-    '44' => '50666-BPS',
-    '27' => '28000-BPS',
-    '25' => '25333-BPS',
-    '28' => '29333-BPS',
-    '40' => '45333-BPS',
-    '20' => '26K-BPS',
-    '14' => '75-BPS',
-    '49' => '57333-BPS',
-    '24' => '33K-BPS',
-    '10' => '14.4K-BPS',
-    '31' => '33333-BPS',
-    '35' => '38666-BPS',
-    '11' => '16.8-BPS',
-    '53' => '62666-BPS',
-    '48' => '56000-BPS',
-    '42' => '48000-BPS',
-    '22' => '115K-BPS',
-    '46' => '53333-BPS',
-    '13' => '38.4K-BPS',
-    '23' => '31K-BPS',
-    '29' => '30666-BPS',
-    '6' => '4800-BPS',
-    '50' => '58666-BPS',
-    '39' => '44000-BPS',
-    '36' => '40000-BPS',
-    '3' => '600-BPS',
-    '51' => '60000-BPS',
-    '9' => '12K-BPS',
-    '41' => '46666-BPS',
-    '12' => '19.2K-BPS',
-    '47' => '54666-BPS',
-    '15' => '450-BPS',
-    '52' => '61333-BPS',
-    '38' => '42666-BPS',
-    '8' => '9600-BPS',
-    '4' => '1200-BPS',
-    '34' => '37333-BPS',
-    '45' => '52000-BPS',
-    '37' => '41333-BPS',
-    '43' => '49333-BPS',
-    '19' => '24K-BPS',
-    '54' => '64000-BPS',
-    '5' => '2400-BPS'
-  },
-  'Client-Vendor' => {
-    '2352' => 'RedBack Networks',
-    '181' => 'ADC Kentrox',
-    '307' => 'Livingston Enterprises, Inc.',
-    '166' => 'Shiva Corporation',
-    '1' => 'Proteon',
-    '434' => 'EICON',
-    '244' => 'Lantronix',
-    '0' => 'RADIUS Standard',
-    '562' => 'Nortel Networks',
-    '272' => 'BinTec Communications GmbH',
-    '64' => 'Gandalf',
-    '332' => 'Digi International',
-    '9' => 'Cisco',
-    '429' => 'U.S. Robotics, Inc.',
-    '15' => 'Xylogics, Inc.',
-    '14' => 'BBN',
-    '52' => 'Cabletron Systems',
-    '529' => 'Ascend Communications Inc.',
-    '117' => 'Telebit',
-    '43' => '3Com',
-    '311' => 'Microsoft',
-    '5' => 'ACC',
-    '343' => 'Intel Corporation'
-  },
-  'Manipulation-Target' => {
-    '1' => 'User-Name',
-    '30' => 'Called-Station-Id',
-    '31' => 'Calling-Station-Id'
-  },
-  'USR-IP-Default-Route-Option' => {
-    '1' => 'enabled',
-    '2' => 'disabled'
-  },
-  'Ascend-FR-Direct' => {
-    '1' => 'FR-Direct-Yes',
-    '0' => 'FR-Direct-No'
-  },
-  'Ascend-Callback' => {
-    '1' => 'Callback-Yes',
-    '0' => 'Callback-No'
-  },
-  'Acct-Terminate-Cause' => {
-    '11' => 'NAS-Reboot',
-    '21' => 'Port-Reinit',
-    '7' => 'Admin-Reboot',
-    '17' => 'User-Error',
-    '2' => 'Lost-Carrier',
-    '22' => 'Port-Disabled',
-    '1' => 'User-Request',
-    '18' => 'Host-Request',
-    '13' => 'Port-Preempted',
-    '16' => 'Callback',
-    '6' => 'Admin-Reset',
-    '3' => 'Lost-Service',
-    '9' => 'NAS-Error',
-    '12' => 'Port-Unneeded',
-    '20' => 'Reauthentication-Failure',
-    '14' => 'Port-Suspended',
-    '15' => 'Service-Unavailable',
-    '8' => 'Port-Error',
-    '4' => 'Idle-Timeout',
-    '19' => 'Supplicant-Restart',
-    '10' => 'NAS-Request',
-    '5' => 'Session-Timeout'
-  },
-  'Tunnel-Medium-Type' => {
-    '6' => '802 (includes all 802 media plus Ethernet canonical format)',
-    '11' => 'IPX',
-    '3' => 'NSAP',
-    '7' => 'E.163 (POTS)',
-    '9' => 'F.69 (Telex)',
-    '12' => 'Appletalk',
-    '2' => 'IP6 (IP version 6)',
-    '15' => 'E.164 with NSAP format subaddress',
-    '14' => 'Banyan Vines',
-    '8' => 'E.164 (SMDS Frame Relay ATM)',
-    '1' => 'IP (IP version 4)',
-    '4' => 'HDLC (8-bit multidrop)',
-    '13' => 'Decnet IV',
-    '10' => 'X.121 (X.25 Frame Relay)',
-    '5' => 'BBN 1822'
-  },
-  'ARAP-Zone-Access' => {
-    '4' => 'Use zone filter exclusively',
-    '1' => 'Only allow access to default zone',
-    '3' => '(not used)',
-    '2' => 'Use zone filter inclusively'
-  },
-  'USR-Tunnel-Security' => {
-    '1' => 'Control-Only',
-    '3' => 'Both-Data-and-Control',
-    '0' => 'None',
-    '2' => 'Data-Only'
-  },
-  'USR-Fallback-Enabled' => {
-    '1' => 'Disabled',
-    '2' => 'Enabled'
-  },
-  'NP-Allowed-Port-Types' => {
-    '11' => 'SDSL - Symmetric DSL',
-    '21' => 'FDDI',
-    '7' => 'HDLC Clear Channel',
-    '17' => 'Cable',
-    '2' => 'ISDN Sync',
-    '1' => 'Sync (T1 Line)',
-    '18' => 'Wireless - Other',
-    '0' => 'Async (Modem)',
-    '16' => 'xDSL - Digital Subscriber Line of unknown type',
-    '13' => 'ADSL-DMT - Asymmetric DSL Discrete Multi-Tone',
-    '6' => 'PIAFS',
-    '3' => 'ISDN Async V.120',
-    '9' => 'X.75',
-    '12' => 'ADSL-CAP - Asymmetric DSL Carrierless Amplitude Phase Modulation',
-    '20' => 'Token Ring',
-    '14' => 'IDSL - ISDN Digital Subscriber Line',
-    '15' => 'Ethernet',
-    '8' => 'X.25',
-    '4' => 'ISDN Async V.110',
-    '19' => 'Wireless - IEEE 802.11',
-    '10' => 'G.3 Fax',
-    '5' => 'Virtual (VPN)'
-  },
-  'USR-RMMIE-Status' => {
-    '1' => 'notEnabledInLocalModem',
-    '3' => 'ok',
-    '2' => 'notDetectedInRemoteModem'
-  },
-  'USR-Originate-Answer-Mode' => {
-    '4' => 'Answer-in-Answer-Mode',
-    '1' => 'Originate-in-Originate-Mode',
-    '3' => 'Answer-in-Originate-Mode',
-    '2' => 'Originate-in-Answer-Mode'
-  },
-  'Ascend-PW-Lifetime' => {
-    '0' => 'Lifetime-In-Days'
-  },
-  'Ascend-Send-Auth' => {
-    '1' => 'Send-Auth-PAP',
-    '0' => 'Send-Auth-None',
-    '2' => 'Send-Auth-CHAP'
-  },
-  'Ascend-Bridge' => {
-    '1' => 'Bridge-Yes',
-    '0' => 'Bridge-No'
-  },
-  'USR-Routing-Protocol' => {
-    '1' => 'Rip1',
-    '2' => 'Rip2'
-  },
-  'USR-Simplified-MNP-Levels' => {
-    '6' => 'synchronousNone',
-    '11' => 'lapmEc',
-    '3' => 'mnpLevel4',
-    '7' => 'mnpLevel2',
-    '9' => 'v42Etc',
-    '12' => 'v42Etc2',
-    '2' => 'mnpLevel3',
-    '14' => 'piafs',
-    '8' => 'mnp10',
-    '1' => 'none',
-    '4' => 'ccittV42',
-    '13' => 'ccittV42SREJ',
-    '10' => 'mnp10Ec',
-    '5' => 'usRoboticsHST'
-  },
-  'Termination-Action' => {
-    '1' => 'RADIUS-Request',
-    '0' => 'Default'
-  },
-  'USR-Expansion-Algorithm' => {
-    '1' => 'Constant',
-    '2' => 'Linear'
-  },
-  'USR-Back-Channel-Data-Rate' => {
-    '1' => '450BPS',
-    '3' => 'None',
-    '2' => '300BPS'
-  },
-  'USR-Failure-to-Connect-Reason' => {
-    '33' => 'v32Cleardown',
-    '32' => 'none',
-    '63' => 'tokenPassingTimeout',
-    '21' => 'noAnswerTone',
-    '71' => 'priDialoutRqTimeout',
-    '7' => 'undefined',
-    '26' => 'v42DisconnectCmd',
-    '18' => 'lineBusy',
-    '72' => 'abortAnlgDstOvrIsdn',
-    '16' => 'noDialTone',
-    '44' => 'linkAbort',
-    '55' => 'pbReceivedLsWhileLinkUp',
-    '74' => 'normalUnspecified',
-    '27' => 'v42IdExchangeFail',
-    '57' => 'pbBadFrame',
-    '61' => 'pbReceiveMsgBufOvrflw',
-    '20' => 'voice',
-    '10' => 'retransmitLimit',
-    '31' => 'v42InvalidCommand',
-    '35' => 'remoteAccessDenied',
-    '11' => 'linkDisconnectMsgRec',
-    '78' => 'invalidCauseValue',
-    '48' => 'pbLinkErrTxTardyACK',
-    '77' => 'abnormalDisconnect',
-    '65' => 'mnpProtocolViolation',
-    '29' => 'v42InvalidCodeWord',
-    '50' => 'pbReceiveBusTimeout',
-    '39' => 'noPromptingInSync',
-    '64' => 'dspInterruptTimeout',
-    '58' => 'pbAckWaitTimeout',
-    '41' => 'modeIncompatible',
-    '12' => 'noLoopCurrent',
-    '15' => 'managementCommand',
-    '52' => 'pbLinkErrRxTAL',
-    '60' => 'pbReceiveOvrflwRNRFail',
-    '56' => 'pbOutOfSequenceFrame',
-    '66' => 'class2FaxHangupCmd',
-    '73' => 'normalUserCallClear',
-    '45' => 'autopassFailed',
-    '76' => 'protocolErrorEvent',
-    '19' => 'noAnswer',
-    '62' => 'rcvdGatewayDiscCmd',
-    '54' => 'pbClockMissing',
-    '67' => 'hstSpeedSwitchTimeout',
-    '70' => 't1Glare',
-    '68' => 'tooManyUnacked',
-    '2' => 'escapeSequence',
-    '17' => 'keyAbort',
-    '1' => 'dtrDrop',
-    '30' => 'v42StringToLong',
-    '25' => 'v42BreakTimeout',
-    '28' => 'v42BadSetup',
-    '75' => 'bearerIncompatibility',
-    '40' => 'nonArqMode',
-    '14' => 'unableToRetrain',
-    '69' => 'timerExpired',
-    '59' => 'pbReceivedAckSeqErr',
-    '49' => 'pbTransmitBusTimeout',
-    '24' => 'v42SabmeTimeout',
-    '53' => 'pbTransmitMasterTimeout',
-    '22' => 'noCarrier',
-    '42' => 'noPromptInNonARQ',
-    '46' => 'pbGenericError',
-    '23' => 'undetermined',
-    '13' => 'invalidSpeed',
-    '6' => 'mnpIncompatible',
-    '3' => 'athCommand',
-    '36' => 'loopLoss',
-    '9' => 'linkPassword',
-    '51' => 'pbLinkErrTxTAL',
-    '47' => 'pbLinkErrTxPreAck',
-    '8' => 'remotePassword',
-    '38' => 'promptNotEnabled',
-    '4' => 'carrierLoss',
-    '34' => 'dialSecurity',
-    '37' => 'ds0Teardown',
-    '43' => 'dialBackLink',
-    '5' => 'inactivityTimout'
-  },
-  'Login-Service' => {
-    '6' => 'X25-T3POS',
-    '3' => 'Portmaster (proprietary)',
-    '2' => 'TCP Clear',
-    '8' => 'TCP Clear Quiet (suppresses any NAS-generated connect string)',
-    '1' => 'Rlogin',
-    '4' => 'LAT',
-    '0' => 'Telnet',
-    '5' => 'X25-PAD'
-  },
-  'USR-Device-Connected-To' => {
-    '1' => 'None',
-    '3' => 'quadModem',
-    '2' => 'isdnGateway'
-  },
-  'Auth-Provider-Type' => {
-    '1' => 'Windows',
-    '0' => 'None',
-    '2' => 'RADIUS Proxy'
-  },
-  'Ascend-Force56' => {
-    '1' => 'Force-56-Yes',
-    '0' => 'Force-56-No'
-  },
-  'USR-NAS-Type' => {
-    '6' => 'Generic-RADIUS',
-    '4' => '3Com-SA-Server',
-    '1' => '3Com-NETServer',
-    '3' => 'TACACS+-Server',
-    '0' => '3Com-NMC',
-    '7' => '3Com-NETBuilder-II',
-    '2' => '3Com-HiPerArc',
-    '5' => 'Ascend'
-  },
-  'USR-Filter-Zones' => {
-    '1' => 'enabled',
-    '2' => 'disabled'
-  },
-  'Acct-Provider-Type' => {
-    '2' => 'RADIUS Proxy'
-  },
-  'Framed-Compression' => {
-    '1' => 'Van Jacobson TCP/IP header compression',
-    '3' => 'Stac-LZS compression',
-    '0' => 'None',
-    '2' => 'IPX Header compression'
-  },
-  'USR-Initial-Rx-Link-Data-Rate' => {
-    '33' => '36000-BPS',
-    '32' => '34666-BPS',
-    '21' => '28K-BPS',
-    '7' => '7200-BPS',
-    '26' => '26666-BPS',
-    '17' => '57.6K-BPS',
-    '2' => '300-BPS',
-    '1' => '110-BPS',
-    '18' => '21.6K-BPS',
-    '30' => '32000-BPS',
-    '16' => 'UNKNOWN-BPS',
-    '44' => '50666-BPS',
-    '27' => '28000-BPS',
-    '25' => '25333-BPS',
-    '28' => '29333-BPS',
-    '40' => '45333-BPS',
-    '20' => '26K-BPS',
-    '14' => '75-BPS',
-    '49' => '57333-BPS',
-    '24' => '33K-BPS',
-    '10' => '14.4K-BPS',
-    '31' => '33333-BPS',
-    '35' => '38666-BPS',
-    '11' => '16.8-BPS',
-    '53' => '62666-BPS',
-    '48' => '56000-BPS',
-    '42' => '48000-BPS',
-    '22' => '115K-BPS',
-    '46' => '53333-BPS',
-    '13' => '38.4K-BPS',
-    '23' => '31K-BPS',
-    '29' => '30666-BPS',
-    '6' => '4800-BPS',
-    '50' => '58666-BPS',
-    '39' => '44000-BPS',
-    '36' => '40000-BPS',
-    '3' => '600-BPS',
-    '51' => '60000-BPS',
-    '9' => '12K-BPS',
-    '41' => '46666-BPS',
-    '12' => '19.2K-BPS',
-    '47' => '54666-BPS',
-    '15' => '450-BPS',
-    '52' => '61333-BPS',
-    '38' => '42666-BPS',
-    '8' => '9600-BPS',
-    '4' => '1200-BPS',
-    '34' => '37333-BPS',
-    '45' => '52000-BPS',
-    '37' => '41333-BPS',
-    '43' => '49333-BPS',
-    '19' => '24K-BPS',
-    '54' => '64000-BPS',
-    '5' => '2400-XBPS'
-  },
-  'USR-Default-DTE-Data-Rate' => {
-    '11' => '16.8-BPS',
-    '21' => '28K-BPS',
-    '7' => '7200-BPS',
-    '17' => '57.6K-BPS',
-    '2' => '300-BPS',
-    '22' => '115K-BPS',
-    '1' => '110-BPS',
-    '18' => '21.6K-BPS',
-    '16' => 'UNKNOWN-BPS',
-    '13' => '38.4K-BPS',
-    '6' => '4800-BPS',
-    '3' => '600-BPS',
-    '9' => '12K-BPS',
-    '12' => '19.2K-BPS',
-    '20' => '26K-BPS',
-    '14' => '75-BPS',
-    '15' => '450-BPS',
-    '8' => '9600-BPS',
-    '4' => '1200-BPS',
-    '19' => '24K-BPS',
-    '10' => '14.4K-BPS',
-    '5' => '2400-BPS'
-  },
-  'USR-Event-ID' => {
-    '33' => 'Modem-Ring-No-Answer',
-    '32' => 'Modem-Reset-by-DTE',
-    '90' => 'NTP-Contact-Degraded',
-    '63' => 'Connection-Attempt-Failure',
-    '21' => 'DTR-True',
-    '71' => 'Gateway-Network-Failed',
-    '102' => 'RADIUS-Accounting-Group-Restore',
-    '7' => 'Module-Removed',
-    '80' => 'Psu-Incompatible',
-    '26' => 'No-Loop-Current-Detected',
-    '119' => 'T1/T1-E1/PRI-InCall-Fail-Event',
-    '99' => 'DNS-Contact-Restored',
-    '18' => 'Connection-Failed',
-    '72' => 'Gateway-Network-Restored',
-    '16' => 'In-Connection-Term',
-    '44' => 'Dial-Out-Restricted-Number',
-    '55' => 'Yellow-Alarm-Clear',
-    '84' => 'T1 T1-E1/PRI-Call-Failed-Event',
-    '74' => 'Packet-Bus-Clock-Restored',
-    '27' => 'Yellow-Alarm',
-    '95' => 'Changed-to-Maint-Srvs-State',
-    '57' => 'Loss-Of-Signal-Clear',
-    '61' => 'Incoming-Connection-Terminated',
-    '20' => 'DTE-Transmit-Idle',
-    '92' => 'Out-Connection-Failed',
-    '103' => 'RADIUS-Accounting-Group-Degrade',
-    '89' => 'IPGW-Link-Down',
-    '10' => 'HUB-Temp-Out-of-Range',
-    '31' => 'Timing-Source-Switch',
-    '35' => 'Pkt-Bus-Session-Active',
-    '11' => 'Fan-Failed',
-    '91' => 'In-Connection-Failed',
-    '78' => 'DS0s-Out-of-Service',
-    '48' => 'Response-Attempt-Limit-Exceeded',
-    '87' => 'NTP-Contact-Restored',
-    '93' => 'Application-ProcessorReset',
-    '77' => 'DS0s-In-Service',
-    '65' => 'Continuous-CRC-Alarm-Clear',
-    '29' => 'Loss-Of-Signal',
-    '50' => 'Dial-Out-Call-Duration',
-    '39' => 'User-Interface-Reset',
-    '64' => 'Continuous-CRC-Alarm',
-    '97' => 'Loop-Back-on-channel',
-    '58' => 'Rcv-Alrm-Ind-Signal-Clear',
-    '41' => 'Gateway-Port-Link-Active',
-    '12' => 'Watchdog-Timeout',
-    '15' => 'Out-Connection-Est',
-    '81' => 'T1 T1-E1/PRI-Call-Arrive-Event',
-    '52' => 'Pkt-Bus-Session-Err-Status',
-    '60' => 'Outgoing-Connection-Established',
-    '56' => 'Red-Alarm-Clear',
-    '101' => 'RADIUS-Accounting-Restored',
-    '73' => 'Packet-Bus-Clock-Lost',
-    '66' => 'Physical-State-Change',
-    '45' => 'Dial-Back-Restricted-Number',
-    '86' => 'NTP-Contact-Lost',
-    '76' => 'D-Channel-Out-of-Service',
-    '19' => 'Connection-Timeout',
-    '62' => 'Outgoing-Connection-Terminated',
-    '54' => 'Acct-Server-Contact-Loss',
-    '17' => 'Out-Connection-Term',
-    '88' => 'IPGW-Link-Up',
-    '30' => 'Rcv-Alrm-Ind-Signal',
-    '100' => 'DNS-Contact-Degraded',
-    '82' => 'T1 T1-E1/PRI-Call-Connect-Event',
-    '25' => 'No-Dial-Tone-Detected',
-    '120' => 'T1/T1-E1/PRI-OutCall-Fail-Event',
-    '28' => 'Red-Alarm',
-    '83' => 'T1 T1-E1/PRI-Call-Termina-Event',
-    '75' => 'D-Channel-In-Service',
-    '40' => 'Gateway-Port-Out-of-Service',
-    '192' => 'CDMA-Call-End',
-    '14' => 'In-Connection-Est',
-    '59' => 'Incoming-Connection-Established',
-    '191' => 'CDMA-Call-Start',
-    '49' => 'Login-Attempt-Limit-Exceeded',
-    '24' => 'Fallbacks-at-Threshold',
-    '104' => 'RADIUS-Accounting-Group-NonOper',
-    '53' => 'NMC-AutoRespnse-Trap',
-    '122' => 'RMMIE-Speed-Shift-Event',
-    '121' => 'RMMIE-Retrain-Event',
-    '79' => 'T1/T1PRI/E1PRI-Call-Event',
-    '22' => 'DTR-False',
-    '42' => 'Dial-Out-Login-Failure',
-    '46' => 'User-Blacklisted',
-    '23' => 'Block-Error-at-Threshold',
-    '13' => 'Mgmt-Bus-Failure',
-    '96' => 'Loop-Back-cleared-on-channel',
-    '6' => 'Module-Inserted',
-    '85' => 'DNS-Contact-Lost',
-    '36' => 'Pkt-Bus-Session-Congestion',
-    '94' => 'DSP-Reset',
-    '9' => 'PSU-Failed',
-    '51' => 'Dial-In-Call-Duration',
-    '47' => 'Attempted-Login-Blacklisted',
-    '8' => 'PSU-Voltage-Alarm',
-    '38' => 'Pkt-Bus-Session-Inactive',
-    '98' => 'Telco-Abnormal-Response',
-    '34' => 'DTE-Ring-No-Answer',
-    '37' => 'Pkt-Bus-Session-Lost',
-    '43' => 'Dial-In-Login-Failure'
-  },
-  'USR-Final-Rx-Link-Data-Rate' => {
-    '33' => '36000-BPS',
-    '32' => '34666-BPS',
-    '21' => '28K-BPS',
-    '7' => '7200-BPS',
-    '26' => '26666-BPS',
-    '17' => '57.6K-BPS',
-    '2' => '300-BPS',
-    '1' => '110-BPS',
-    '18' => '21.6K-BPS',
-    '30' => '32000-BPS',
-    '16' => 'UNKNOWN-BPS',
-    '44' => '50666-BPS',
-    '27' => '28000-BPS',
-    '25' => '25333-BPS',
-    '28' => '29333-BPS',
-    '40' => '45333-BPS',
-    '20' => '26K-BPS',
-    '14' => '75-BPS',
-    '49' => '57333-BPS',
-    '24' => '33K-BPS',
-    '10' => '14.4K-BPS',
-    '31' => '33333-BPS',
-    '35' => '38666-BPS',
-    '11' => '16.8-BPS',
-    '53' => '62666-BPS',
-    '48' => '56000-BPS',
-    '42' => '48000-BPS',
-    '22' => '115K-BPS',
-    '46' => '53333-BPS',
-    '13' => '38.4K-BPS',
-    '23' => '31K-BPS',
-    '29' => '30666-BPS',
-    '6' => '4800-BPS',
-    '50' => '58666-BPS',
-    '39' => '44000-BPS',
-    '36' => '40000-BPS',
-    '3' => '600-BPS',
-    '51' => '60000-BPS',
-    '9' => '12K-BPS',
-    '41' => '46666-BPS',
-    '12' => '19.2K-BPS',
-    '47' => '54666-BPS',
-    '15' => '450-BPS',
-    '52' => '61333-BPS',
-    '38' => '42666-BPS',
-    '8' => '9600-BPS',
-    '4' => '1200-BPS',
-    '34' => '37333-BPS',
-    '45' => '52000-BPS',
-    '37' => '41333-BPS',
-    '43' => '49333-BPS',
-    '19' => '24K-BPS',
-    '54' => '64000-BPS',
-    '5' => '2400-BPS'
-  },
-  'Ascend-History-Weigh-Type' => {
-    '1' => 'History-Linear',
-    '0' => 'History-Constant',
-    '2' => 'History-Quadratic'
-  },
-  'USR-PW-Framed-Routing-V2' => {
-    '1' => 'On',
-    '0' => 'Off'
-  },
-  'USR-Auth-Mode' => {
-    '6' => 'Auth-Netware',
-    '3' => 'Auth-UNIX-PW',
-    '7' => 'Auth-Skey',
-    '9' => 'Auth-UNIX-Crypt',
-    '2' => 'Auth-Safeword',
-    '8' => 'Auth-EAP-Proxy',
-    '1' => 'Auth-Ace',
-    '4' => 'Auth-Defender',
-    '0' => 'Auth-3Com',
-    '5' => 'Auth-TACACSP'
-  },
-  'USR-Bridging' => {
-    '1' => 'enabled',
-    '2' => 'disabled'
-  },
-  'USR-Appletalk' => {
-    '1' => 'enabled',
-    '2' => 'disabled'
-  },
-  'Framed-Protocol' => {
-    '6' => 'X.75 Synchronous',
-    '261' => 'FR',
-    '3' => 'AppleTalk Remote Access Protocol (ARAP)',
-    '259' => 'X25',
-    '2' => 'SLIP',
-    '258' => 'EUUI',
-    '4' => 'Gandalf Proprietary SingleLink/MultiLink protocol',
-    '1' => 'PPP',
-    '256' => 'MPP',
-    '260' => 'COMB',
-    '257' => 'EURAW',
-    '5' => 'Xylogics proprietary IPX/SLIP'
-  },
-  'USR-Connect-Term-Reason' => {
-    '33' => 'v32Cleardown',
-    '32' => 'none',
-    '63' => 'tokenPassingTimeout',
-    '21' => 'noAnswerTone',
-    '71' => 'priDialoutRqTimeout',
-    '7' => 'undefined',
-    '26' => 'v42DisconnectCmd',
-    '18' => 'lineBusy',
-    '72' => 'abortAnlgDstOvrIsdn',
-    '16' => 'noDialTone',
-    '44' => 'linkAbort',
-    '55' => 'pbReceivedLsWhileLinkUp',
-    '74' => 'normalUnspecified',
-    '27' => 'v42IdExchangeFail',
-    '57' => 'pbBadFrame',
-    '61' => 'pbReceiveMsgBufOvrflw',
-    '20' => 'voice',
-    '10' => 'retransmitLimit',
-    '31' => 'v42InvalidCommand',
-    '35' => 'remoteAccessDenied',
-    '11' => 'linkDisconnectMsgReceived',
-    '78' => 'invalidCauseValue',
-    '48' => 'pbLinkErrTxTardyACK',
-    '77' => 'abnormalDisconnect',
-    '65' => 'mnpProtocolViolation',
-    '29' => 'v42InvalidCodeWord',
-    '50' => 'pbReceiveBusTimeout',
-    '39' => 'noPromptingInSync',
-    '64' => 'dspInterruptTimeout',
-    '58' => 'pbAckWaitTimeout',
-    '41' => 'modeIncompatible',
-    '12' => 'noLoopCurrent',
-    '15' => 'managementCommand',
-    '52' => 'pbLinkErrRxTAL',
-    '60' => 'pbReceiveOvrflwRNRFail',
-    '56' => 'pbOutOfSequenceFrame',
-    '73' => 'normalUserCallClear',
-    '66' => 'class2FaxHangupCmd',
-    '45' => 'autopassFailed',
-    '76' => 'protocolErrorEvent',
-    '19' => 'noAnswer',
-    '62' => 'rcvdGatewayDiscCmd',
-    '54' => 'pbClockMissing',
-    '67' => 'hstSpeedSwitchTimeout',
-    '70' => 't1Glare',
-    '68' => 'tooManyUnacked',
-    '2' => 'escapeSequence',
-    '17' => 'keyAbort',
-    '1' => 'dtrDrop',
-    '30' => 'v42StringToLong',
-    '25' => 'v42BreakTimeout',
-    '28' => 'v42BadSetup',
-    '75' => 'bearerIncompatibility',
-    '40' => 'nonArqMode',
-    '14' => 'unableToRetrain',
-    '69' => 'timerExpired',
-    '59' => 'pbReceivedAckSeqErr',
-    '49' => 'pbTransmitBusTimeout',
-    '24' => 'v42SabmeTimeout',
-    '53' => 'pbTransmitMasterTimeout',
-    '22' => 'noCarrier',
-    '42' => 'noPromptInNonARQ',
-    '46' => 'pbGenericError',
-    '23' => 'undetermined',
-    '13' => 'invalidSpeed',
-    '6' => 'mnpIncompatible',
-    '3' => 'athCommand',
-    '36' => 'loopLoss',
-    '9' => 'linkPassword',
-    '51' => 'pbLinkErrTxTAL',
-    '47' => 'pbLinkErrTxPreAck',
-    '8' => 'remotePassword',
-    '38' => 'promptNotEnabled',
-    '4' => 'carrierLoss',
-    '34' => 'dialSecurity',
-    '37' => 'ds0Teardown',
-    '43' => 'dialBackLink',
-    '5' => 'inactivityTimout'
-  },
-  'USR-Syslog-Tap' => {
-    '1' => 'Raw',
-    '0' => 'Off',
-    '2' => 'Framed'
-  },
-  'Authentication-Type' => {
-    '3' => 'MS-CHAP v1',
-    '7' => 'Unauthenticated',
-    '9' => 'MS-CHAP v1 CPW',
-    '2' => 'CHAP',
-    '8' => 'Extension',
-    '1' => 'PAP',
-    '4' => 'MS-CHAP v2',
-    '10' => 'MS-CHAP v2 CPW',
-    '5' => 'EAP'
-  },
-  'USR-Card-Type' => {
-    '33' => 'NTServerNAC',
-    '32' => 'ModemPoolISDNNAC',
-    '7' => 'TrGatewayNAC',
-    '26' => 'ISDNGatewayNAC',
-    '1026' => 'BellcoreShrtHaulDualT1NIC',
-    '18' => 'AccessServer',
-    '1004' => 'QuadAlogDgtlMdmNIC',
-    '16' => 'SingleT1NAC',
-    '1018' => 'HSEthernetWithV35NIC',
-    '44' => 'EnhancedAccessServer',
-    '1020' => 'DualHighSpeedV35NIC',
-    '1007' => 'EthernetNIC',
-    '27' => 'ISDNpriT1NAC',
-    '1013' => 'QuadAlogNonMgdIntlMdmNIC',
-    '1012' => 'QuadAlogMgdIntlMdmNIC',
-    '1008' => 'ShortHaulDualT1NIC',
-    '20' => '486EthernetGatewayNAC',
-    '1027' => 'SCSIEdgeServerNIC',
-    '1001' => 'DualT1NIC',
-    '1011' => 'QuadAlogNonMgdMdmNIC',
-    '1021' => 'QuadV35RS232LowSpeedNIC',
-    '1014' => 'QuadLsdLiMgdMdmNIC',
-    '10' => 'QuadV32DigitalModemNAC',
-    '31' => 'ModemPoolV34ModemNAC',
-    '35' => 'QuadV34AnalogG2NAC',
-    '11' => 'QuadV32AnalogModemNAC',
-    '1019' => 'HSEthernetWithoutV35NIC',
-    '1022' => 'DualE1NIC',
-    '1010' => 'X25NIC',
-    '29' => 'ModemPoolManagementNAC',
-    '39' => 'X2524ChannelNAC',
-    '12' => 'QuadV32DigAnlModemNAC',
-    '15' => 'QuadV34DigAnlModemNAC',
-    '1023' => 'ShortHaulDualE1NIC',
-    '45' => 'EnhancedISDNGatewayNAC',
-    '19' => '486TrGatewayNAC',
-    '1002' => 'DualAlogMdmNIC',
-    '2' => 'SlotUnknown',
-    '17' => 'EthernetGatewayNAC',
-    '1' => 'SlotEmpty',
-    '1009' => 'DualAlogMgdIntlMdmNIC',
-    '30' => 'ModemPoolNetserverNAC',
-    '25' => 'ApplicationServerNAC',
-    '1005' => 'TokenRingNIC',
-    '28' => 'ClkedNetMgtCard',
-    '14' => 'QuadV34AnlModemNAC',
-    '22' => 'DualRS232NAC',
-    '42' => 'WirelessGatewayNac',
-    '1016' => 'QuadLsdLiMgdIntlMdmNIC',
-    '23' => '486X25GatewayNAC',
-    '13' => 'QuadV34DigModemNAC',
-    '1006' => 'SingleT1NIC',
-    '6' => 'QuadModemNAC',
-    '36' => 'QuadV34DigAnlgG2NAC',
-    '3' => 'NetwMgtCard',
-    '9' => 'DualV34ModemNAC',
-    '1003' => 'QuadDgtlMdmNIC',
-    '1025' => 'BellcoreLongHaulDualT1NIC',
-    '1015' => 'QuadLsdLiNonMgdMdmNIC',
-    '8' => 'X25GatewayNAC',
-    '38' => 'NETServerTokenRingNAC',
-    '4' => 'DualT1NAC',
-    '34' => 'QuadV34DigitalG2NAC',
-    '37' => 'NETServerFrameRelayNAC',
-    '1017' => 'QuadLsdLiNonMgdIntlMdmNIC',
-    '5' => 'DualModemNAC'
-  },
-  'Ascend-Route-IPX' => {
-    '1' => 'Route-IPX-Yes',
-    '0' => 'Route-IPX-No'
-  },
-  'Packet-Type' => {
-    '11' => 'Access-Challenge',
-    '3' => 'Access-Reject',
-    '12' => 'Status-Server (experimental)',
-    '2' => 'Access-Accept',
-    '1' => 'Access-Request',
-    '4' => 'Accounting-Request',
-    '13' => 'Status-Client (experimental)',
-    '255' => 'Reserved',
-    '5' => 'Accounting-Response'
-  },
-  'Ascend-Link-Compression' => {
-    '1' => 'Link-Comp-Stac',
-    '0' => 'Link-Comp-None'
-  },
-  'Acct-Status-Type' => {
-    '11' => 'Tunnel-Reject',
-    '3' => 'Interim Update',
-    '7' => 'Accounting-On',
-    '9' => 'Tunnel-Start',
-    '12' => 'Tunnel-Link-Start',
-    '2' => 'Stop',
-    '14' => 'Tunnel-Link-Reject',
-    '15' => 'Failed',
-    '8' => 'Accounting-Off',
-    '1' => 'Start',
-    '13' => 'Tunnel-Link-Stop',
-    '10' => 'Tunnel-Stop'
-  },
-  'USR-Equalization-Type' => {
-    '1' => 'Long',
-    '2' => 'Short'
-  },
-  'Ascend-Handle-IPX' => {
-    '1' => 'Handle-IPX-Client',
-    '0' => 'Handle-IPX-None',
-    '2' => 'Handle-IPX-Server'
-  },
-  'Ascend-Data-Svc' => {
-    '33' => 'Switched-1728K',
-    '32' => 'Switched-1664K',
-    '21' => 'Switched-896K',
-    '7' => 'Switched-1536K',
-    '26' => 'Switched-1216K',
-    '2' => 'Nailed-64K',
-    '17' => 'Switched-640K',
-    '1' => 'Nailed-56KR',
-    '18' => 'Switched-704K',
-    '30' => 'Switched-1472K',
-    '16' => 'Switched-576K',
-    '25' => 'Switched-1152K',
-    '27' => 'Switched-1280K',
-    '28' => 'Switched-1344K',
-    '40' => 'Switched-restricted-64-x30',
-    '20' => 'Switched-832K',
-    '14' => 'Switched-448K',
-    '24' => 'Switched-1088K',
-    '10' => 'Switched-192K',
-    '31' => 'Switched-1600K',
-    '35' => 'Switched-1856K',
-    '11' => 'Switched-256K',
-    '42' => 'Switched-modem',
-    '22' => 'Switched-960K',
-    '0' => 'Switched-Voice-Bearer',
-    '23' => 'Switched-1024K',
-    '13' => 'Switched-384K-MR',
-    '29' => 'Switched-1408K',
-    '6' => 'Switched-384K',
-    '39' => 'Switched-clear-bearer-v110',
-    '36' => 'Switched-1920K',
-    '3' => 'Switched-64KR',
-    '9' => 'Switched-128K',
-    '41' => 'Switched-clear-56-v110',
-    '12' => 'Switched-320K',
-    '15' => 'Switched-512K',
-    '38' => 'Switched-restricted-bearer-x30',
-    '8' => 'Switched-1536KR',
-    '4' => 'Switched-56K',
-    '34' => 'Switched-1792K',
-    '37' => 'Switched-inherited',
-    '43' => 'Switched-atmodem',
-    '19' => 'Switched-768K',
-    '5' => 'Switched-384KR'
-  },
-  'Framed-Routing' => {
-    '1' => 'Send',
-    '3' => 'Send-Listen',
-    '0' => 'None',
-    '2' => 'Listen'
-  },
-  'Ascend-Route-IP' => {
-    '1' => 'Route-IP-Yes',
-    '0' => 'Route-IP-No'
-  },
-  'USR-Speed-Of-Connection' => {
-    '1' => '56',
-    '3' => 'Voice',
-    '0' => 'Auto',
-    '2' => '64'
-  },
-  'USR-Connect-Speed' => {
-    '33' => '50666-BPS',
-    '32' => '49333-BPS',
-    '21' => '26400-BPS',
-    '7' => '9600-BPS',
-    '26' => '41333-BPS',
-    '17' => '288000-BPS',
-    '2' => '300-BPS',
-    '1' => 'NONE',
-    '18' => '75-1200-BPS',
-    '30' => '46666-BPS',
-    '16' => '115200-BPS',
-    '44' => '30666-BPS',
-    '27' => '42666-BPS',
-    '25' => '37333-BPS',
-    '28' => '44000-BPS',
-    '40' => '25333-BPS',
-    '20' => '24000-BPS',
-    '14' => '38400-BPS',
-    '49' => '40000-BPS',
-    '24' => '33333-BPS',
-    '10' => '16800-BPS',
-    '31' => '48000-BPS',
-    '35' => '53333-BPS',
-    '11' => '19200-BPS',
-    '53' => '62666-BPS',
-    '48' => '38666-BPS',
-    '42' => '28000-BPS',
-    '22' => '31200-BPS',
-    '46' => '34666-BPS',
-    '13' => '28800-BPS',
-    '23' => '33600-BPS',
-    '29' => '45333-BPS',
-    '6' => '7200-BPS',
-    '50' => '58666-BPS',
-    '39' => '64000-BPS',
-    '36' => '54666-BPS',
-    '3' => '1200-BPS',
-    '51' => '60000-BPS',
-    '9' => '14400-BPS',
-    '41' => '26666-BPS',
-    '12' => '21600-BPS',
-    '47' => '36000-BPS',
-    '15' => '57600-BPS',
-    '52' => '61333-BPS',
-    '38' => '57333-BPS',
-    '8' => '12000-BPS',
-    '4' => '2400-BPS',
-    '34' => '52000-BPS',
-    '45' => '32000-BPS',
-    '37' => '56000-BPS',
-    '43' => '29333-BPS',
-    '19' => '1200-75-BPS',
-    '5' => '4800-BPS'
-  },
-  'USR-Callback-Type' => {
-    '4' => 'Dynamic',
-    '1' => 'Normal',
-    '3' => 'Static',
-    '2' => 'ANI'
-  },
-  'USR-CCP-Algorithm' => {
-    '4' => 'Any',
-    '1' => 'NONE',
-    '3' => 'MS',
-    '2' => 'Stac'
-  },
-  'USR-Initial-Tx-Link-Data-Rate' => {
-    '33' => '36000-BPS',
-    '32' => '34666-BPS',
-    '21' => '28K-BPS',
-    '7' => '7200-BPS',
-    '26' => '26666-BPS',
-    '17' => '57.6K-BPS',
-    '2' => '300-BPS',
-    '1' => '110-BPS',
-    '18' => '21.6K-BPS',
-    '30' => '32000-BPS',
-    '16' => 'UNKNOWN-BPS',
-    '44' => '50666-BPS',
-    '27' => '28000-BPS',
-    '25' => '25333-BPS',
-    '28' => '29333-BPS',
-    '40' => '45333-BPS',
-    '20' => '26K-BPS',
-    '14' => '75-BPS',
-    '49' => '57333-BPS',
-    '24' => '33K-BPS',
-    '10' => '14.4K-BPS',
-    '31' => '33333-BPS',
-    '35' => '38666-BPS',
-    '11' => '16.8-BPS',
-    '53' => '62666-BPS',
-    '48' => '56000-BPS',
-    '42' => '48000-BPS',
-    '22' => '115K-BPS',
-    '46' => '53333-BPS',
-    '13' => '38.4K-BPS',
-    '23' => '31K-BPS',
-    '29' => '30666-BPS',
-    '6' => '4800-BPS',
-    '50' => '58666-BPS',
-    '39' => '44000-BPS',
-    '36' => '40000-BPS',
-    '3' => '600-BPS',
-    '9' => '12K-BPS',
-    '51' => '60000-BPS',
-    '41' => '46666-BPS',
-    '12' => '19.2K-BPS',
-    '15' => '450-BPS',
-    '47' => '54666-BPS',
-    '38' => '42666-BPS',
-    '8' => '9600-BPS',
-    '52' => '61333-BPS',
-    '4' => '1200-BPS',
-    '34' => '37333-BPS',
-    '45' => '52000-BPS',
-    '37' => '41333-BPS',
-    '43' => '49333-BPS',
-    '19' => '24K-BPS',
-    '54' => '64000-BPS',
-    '5' => '2400-BPS'
-  },
-  'USR-RMMIE-Last-Update-Event' => {
-    '4' => 'speedShift',
-    '1' => 'none',
-    '3' => 'retrain',
-    '2' => 'initialConnection',
-    '5' => 'plannedDisconnect'
-  },
-  'Provider-Type' => {
-    '1' => 'Windows',
-    '0' => 'None',
-    '2' => 'RADIUS Proxy'
-  },
-  'Nortel-Port-QOS' => {
-    '6' => 'Premium',
-    '3' => 'Silver',
-    '7' => 'Critical Network',
-    '2' => 'Bronze',
-    '4' => 'Gold',
-    '1' => 'Custom',
-    '0' => 'Standard',
-    '5' => 'Platinum'
-  },
-  'Ascend-PW-Warntime' => {
-    '0' => 'Days-Of-Warning'
-  },
-  'USR-Initial-Modulation-Type' => {
-    '33' => 'v90Analogue',
-    '21' => 'vFC',
-    '7' => 'ccittV32bis',
-    '26' => 'x75',
-    '17' => 'v29FaxClass2',
-    '2' => 'ccittV32',
-    '1' => 'usRoboticsHST',
-    '18' => 'v17FaxClass2',
-    '30' => 'x2symmetric',
-    '16' => 'v27FaxClass2',
-    '27' => 'ayncSyncPPP',
-    '25' => 'v120',
-    '28' => 'clearChannel',
-    '20' => 'v34',
-    '14' => 'v17FaxClass1',
-    '24' => 'v110',
-    '10' => 'bell208b',
-    '31' => 'piafs',
-    '35' => 'v90AllDigital',
-    '11' => 'v21FaxClass1',
-    '22' => 'v34plus',
-    '13' => 'v29FaxClass1',
-    '23' => 'x2',
-    '29' => 'x2client',
-    '6' => 'bell212',
-    '3' => 'ccittV22bis',
-    '9' => 'negotiationFailed',
-    '12' => 'v27FaxClass1',
-    '15' => 'v21FaxClass2',
-    '8' => 'ccittV23',
-    '4' => 'bell103',
-    '34' => 'v90Digital',
-    '19' => 'v32Terbo',
-    '5' => 'ccittV21'
-  },
-  'Service-Type' => {
-    '6' => 'Administrative',
-    '11' => 'Callback Administrative',
-    '3' => 'Callback Login',
-    '7' => 'NAS Prompt',
-    '9' => 'Callback Nas Prompt',
-    '2' => 'Framed',
-    '8' => 'Authenticate Only',
-    '1' => 'Login',
-    '4' => 'Callback Framed',
-    '10' => 'Call Check',
-    '5' => 'Outbound'
-  },
-  'USR-Call-Event-Code' => {
-    '32' => 'outCallConnect',
-    '21' => 'analogBlocked',
-    '7' => 'modemsNotAllowed',
-    '26' => 'protocolError',
-    '17' => 'progReject',
-    '2' => 'setup',
-    '1' => 'notSupported',
-    '18' => 'callingPartyReject',
-    '30' => 'outCallArrival',
-    '16' => 'chidReject',
-    '27' => 'noFreeBchannel',
-    '25' => 'congestion',
-    '28' => 'inOutCallCollision',
-    '20' => 'blocked',
-    '14' => 'bcReject',
-    '24' => 'busy',
-    '10' => 'noFreeIGW',
-    '31' => 'inCallConnect',
-    '11' => 'igwRejectCall',
-    '22' => 'digitalBlocked',
-    '13' => 'noFreeTdmts',
-    '23' => 'outOfService',
-    '29' => 'inCallArrival',
-    '6' => 'noFreeModem',
-    '3' => 'usrSetup',
-    '9' => 'modemSetupTimeout',
-    '12' => 'igwSetupTimeout',
-    '15' => 'ieReject',
-    '8' => 'modemsRejectCall',
-    '4' => 'telcoDisconnect',
-    '19' => 'calledPartyReject',
-    '5' => 'usrDisconnect'
-  },
-  'USR-RMMIE-x2-Status' => {
-    '6' => 'invalidSpeedSetting',
-    '11' => 'local3200Disabled',
-    '3' => 'x2Disabled',
-    '7' => 'v8NotDetected',
-    '9' => 'incompatibleVersion',
-    '12' => 'excessHighFrequencyAtten',
-    '2' => 'operational',
-    '14' => 'retrainBeforeConnection',
-    '8' => 'x2NotDetected',
-    '1' => 'notOperational',
-    '4' => 'v8Disabled',
-    '13' => 'connectNotSupport3200',
-    '10' => 'incompatibleModes',
-    '5' => 'remote3200Disabled'
-  },
-  'USR-Spoofing' => {
-    '1' => 'enabled',
-    '2' => 'disabled'
-  },
-  'Ascend-PPP-VJ-Slot-Comp' => {
-    '1' => 'VJ-Slot-Comp-No'
-  },
-  'USR-IPX-WAN' => {
-    '1' => 'enabled',
-    '2' => 'disabled'
-  },
-  'USR-IPX-Routing' => {
-    '4' => 'all',
-    '1' => 'send',
-    '3' => 'respond',
-    '0' => 'none',
-    '2' => 'listen'
-  },
-  'Acct-Authentic' => {
-    '1' => 'RADIUS',
-    '3' => 'Remote',
-    '0' => 'None',
-    '2' => 'Local'
-  },
-  'USR-IP-RIP-Policies' => {
-    '128' => 'SimpleAuth',
-    '512' => 'V1Receive',
-    '32' => 'PoisonReserve',
-    '1024' => 'V2Receive',
-    '64' => 'FlashUpdate',
-    '2' => 'SendRoutes',
-    '8' => 'AcceptDefault',
-    '4' => 'SendSubnets',
-    '2147483647' => 'Silent',
-    '0' => 'SendDefault',
-    '256' => 'V1Send',
-    '16' => 'SplitHorizon'
-  },
-  'USR-Compression-Algorithm' => {
-    '4' => 'Auto',
-    '1' => 'Stac',
-    '3' => 'Microsoft',
-    '0' => 'None',
-    '2' => 'Ascend'
-  },
-  'USR-Modulation-Type' => {
-    '33' => 'v90Analogue',
-    '21' => 'vFC',
-    '7' => 'ccittV32bis',
-    '26' => 'x75',
-    '17' => 'v29FaxClass2',
-    '2' => 'ccittV32',
-    '1' => 'usRoboticsHST',
-    '18' => 'v17FaxClass2',
-    '30' => 'x2symmetric',
-    '16' => 'v27FaxClass2',
-    '27' => 'ayncSyncPPP',
-    '25' => 'v120',
-    '28' => 'clearChannel',
-    '20' => 'v34',
-    '14' => 'v17FaxClass1',
-    '24' => 'v110',
-    '10' => 'bell208b',
-    '31' => 'piafs',
-    '35' => 'v90AllDigital',
-    '11' => 'v21FaxClass1',
-    '22' => 'v34plus',
-    '13' => 'v29FaxClass1',
-    '23' => 'x2',
-    '29' => 'x2client',
-    '6' => 'bell212',
-    '3' => 'ccittV22bis',
-    '9' => 'negotiationFailed',
-    '12' => 'v27FaxClass1',
-    '15' => 'v21FaxClass2',
-    '8' => 'ccittV23',
-    '4' => 'bell103',
-    '34' => 'v90Digital',
-    '19' => 'v32Terbo',
-    '5' => 'ccittV21'
-  },
-  'USR-Simplified-V42bis-Usage' => {
-    '1' => 'none',
-    '3' => 'mnpLevel5',
-    '2' => 'ccittV42bis'
-  },
-  'Ascend-PPP-VJ-1172' => {
-    '1' => 'PPP-VJ-1172'
-  },
-  'USR-RMMIE-Planned-Disconnect' => {
-    '6' => 'athCommand',
-    '11' => 'invalidComprDataStringLen',
-    '3' => 'dteInterfaceError',
-    '7' => 'inactivityTimeout',
-    '9' => 'arqProtocolRetransmitLim',
-    '12' => 'invalidComprDataCommand',
-    '2' => 'dteNotReady',
-    '8' => 'arqProtocolError',
-    '1' => 'none',
-    '4' => 'dteRequest',
-    '10' => 'invalidComprDataCodeword',
-    '5' => 'escapeToOnlineCommandMode'
-  },
-  'Ascend-PRI-Number-Type' => {
-    '4' => 'Local-Number',
-    '1' => 'Intl-Number',
-    '0' => 'Unknown-Number',
-    '2' => 'National-Number',
-    '5' => 'Abbrev-Number'
-  },
-  'Ascend-IPX-PeerMode' => {
-    '1' => 'IPX-Peer-Dialin',
-    '0' => 'IPX-Peer-Router'
-  },
-  'Prompt' => {
-    '1' => 'Echo',
-    '0' => 'No Echo'
-  },
-  'USR-Sync-Async-Mode' => {
-    '1' => 'Asynchronous',
-    '2' => 'Synchronous'
-  },
-  'USR-Request-Type' => {
-    '11' => 'Access-Challenge',
-    '21' => 'Resource-Free-Request',
-    '7' => 'Access-Password-Change',
-    '26' => 'NAS-Reboot-Request',
-    '2' => 'Access-Accept',
-    '22' => 'Resource-Free-Response',
-    '1' => 'Access-Request',
-    '255' => 'Reserved',
-    '23' => 'Resource-Query-Request',
-    '13' => 'Status-Client',
-    '27' => 'NAS-Reboot-Response',
-    '25' => 'Disconnect-User',
-    '3' => 'Access-Reject',
-    '253' => 'Tacacs-Message',
-    '9' => 'Access-Password-Reject',
-    '12' => 'Status-Server',
-    '8' => 'Access-Password-Ack',
-    '4' => 'Accounting-Request',
-    '24' => 'Resource-Query-Response',
-    '5' => 'Accounting-Response'
-  },
-  'USR-Compression-Reset-Mode' => {
-    '1' => 'Reset-Every-Packet',
-    '0' => 'Auto',
-    '2' => 'Reset-On-Error'
-  }
-};
 
 sub parse_ias {
   my $string = shift || return;
@@ -2008,16 +2203,11 @@ sub parse {
     next unless exists $attributes{ $attribute };
     $record->{$attribute} = pack "H*", $record->{$attribute} if $record->{$attribute} =~ /^0x[0-9A-F]+$/i;
     $record->{$attribute} =~ s/[\x00-\x1F]//g;
-    $record->{ $attributes{$attribute} } = delete $record->{$attribute};
-  }
-  if ( $self->{enumerate} ) {
-    $record->{'Reason-Code'} = $reason_codes{ $record->{'Reason-Code'} }
-      if defined $record->{'Reason-Code'} and exists $reason_codes{ $record->{'Reason-Code'} };
-    foreach my $attribute ( keys %{ $record } ) {
-	next unless exists $enumerate->{ $attribute };
-	next unless exists $enumerate->{ $attribute }->{ $record->{ $attribute } };
-	$record->{ $attribute } = $enumerate->{ $attribute }->{ $record->{ $attribute } };
-    }
+    $record->{$attribute} = $attributes{ $attribute }->{enum}->{ $record->{$attribute} }
+      if $self->{enumerate}
+         and exists $attributes{ $attribute }->{enum}
+         and defined $attributes{ $attribute }->{enum}->{ $record->{$attribute} };
+    $record->{ $attributes{$attribute}->{name} } = delete $record->{$attribute};
   }
   @$record{qw/NAS-IP-Address User-Name Record-Date Record-Time Service-Name Computer-Name/} = @header;
   return $record;
@@ -2135,3 +2325,5 @@ This module may be used, modified, and distributed under the same terms as Perl 
 L<http://technet.microsoft.com/en-us/network/bb643123.aspx>
 
 L<http://en.wikipedia.org/wiki/RADIUS>
+
+=cut
