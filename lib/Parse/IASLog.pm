@@ -1,5 +1,7 @@
 package Parse::IASLog;
 
+#ABSTRACT: A parser for Microsoft IAS-formatted log entries.
+
 # We export some stuff
 require Exporter;
 @ISA = qw( Exporter );
@@ -7,9 +9,6 @@ require Exporter;
 
 use strict;
 use warnings;
-use vars qw($VERSION);
-
-$VERSION = '1.12';
 
 my %attributes = (
 '-91'   => { 'name' => 'EAP-Protocol' },
@@ -2213,12 +2212,9 @@ sub parse {
   return $record;
 }
 
-1;
-__END__
+q[Parsing is my business and business is gooed];
 
-=head1 NAME
-
-Parse::IASLog - A parser for Microsoft IAS-formatted log entries.
+=pod
 
 =head1 SYNOPSIS
 
@@ -2279,7 +2275,7 @@ See below for the format of the hashref returned.
 
 =head2 CONSTRUCTOR
 
-=over 
+=over
 
 =item C<new>
 
@@ -2292,7 +2288,7 @@ Creates a new Parse::IASLog object. Takes one optional parameter:
 
 =head2 METHODS
 
-=over 
+=over
 
 =item C<parse>
 
@@ -2309,16 +2305,6 @@ be present:
   'Computer-Name', The name of the RADIUS server;
 
 =back
-
-=head1 AUTHOR
-
-Chris C<BinGOs> Williams <chris@bingosnet.co.uk>
-
-=head1 LICENSE
-
-Copyright E<copy> Chris Williams
-
-This module may be used, modified, and distributed under the same terms as Perl itself. Please see the license that came with your Perl distribution for details.
 
 =head1 SEE ALSO
 
